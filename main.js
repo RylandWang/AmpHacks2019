@@ -76,18 +76,23 @@ var AccelerometerComponent = /** @class */ (function () {
     AccelerometerComponent.prototype.ngOnInit = function () {
         var deviceMotion = new DeviceMotionEvent("devicemotion");
         console.log(deviceMotion.acceleration.x);
-        this.x = deviceMotion.acceleration.x;
-        this.y = deviceMotion.acceleration.y;
-        var gyroPresent = false;
+        console.log(this.x);
+        console.log(this.y);
+        alert("hello");
         var x = 0;
-        var y = 0;
+        var gyroPresent = false;
         window.addEventListener("devicemotion", function (event) {
+            console.log("event detected");
+            x = event.acceleration.x;
+            console.log(x);
+            console.log(event.acceleration.y);
             if (event.rotationRate.alpha || event.rotationRate.beta || event.rotationRate.gamma) {
                 gyroPresent = true;
             }
             console.log(gyroPresent);
         });
         this.isGyro = gyroPresent;
+        this.x = x;
     };
     AccelerometerComponent = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
