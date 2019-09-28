@@ -100,9 +100,9 @@ var AccelerometerComponent = /** @class */ (function () {
         var moveCounter = 0;
         function motion(e) {
             var acc = e.acceleration;
-            if (!acc.hasOwnProperty('x')) {
-                acc = e.accelerationIncludingGravity;
-            }
+            // if (!acc.hasOwnProperty('x')) {
+            //   acc = e.accelerationIncludingGravity;
+            // }
             this.xAcc = acc.x;
             this.yAcc = acc.y;
             this.xAccBS.next(acc.x);
