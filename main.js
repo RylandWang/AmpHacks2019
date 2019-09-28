@@ -41,7 +41,7 @@ module.exports = ".garden {\r\n    position: relative;\r\n    width : 200px;\r\n
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<!-- Learn about this code on MDN: https://developer.mozilla.org/en-US/docs/Web/API/Detecting_device_orientation -->\n<h1> 3 </h1>\n<h1>Gyroscope compatible: {{isGyro}}</h1>\n\n<p>x: {{x}}</p>\n<p>y: {{y}}</p>"
+module.exports = "<!-- Learn about this code on MDN: https://developer.mozilla.org/en-US/docs/Web/API/Detecting_device_orientation -->\n<h1> 4 </h1>\n<h1>Accelerometer compatiable: {{isGyro}}</h1>\n\n<h2>x acceleration: {{xAcceleration}} m/s^2</h2>\n<h2>y accleration: {{yAcceleration}} m/s^2</h2>"
 
 /***/ }),
 
@@ -56,6 +56,7 @@ module.exports = "<!-- Learn about this code on MDN: https://developer.mozilla.o
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AccelerometerComponent", function() { return AccelerometerComponent; });
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rxjs */ "./node_modules/rxjs/_esm5/index.js");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -66,76 +67,41 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 
-// import { devModeEqual } from '@angular/core/src/change_detection/change_detection';
+
 var AccelerometerComponent = /** @class */ (function () {
     function AccelerometerComponent() {
         this.x = 0;
         this.y = 0;
+        this.xObservable = new rxjs__WEBPACK_IMPORTED_MODULE_1__["Subject"]();
         this.isGyro = true;
     }
+    Object.defineProperty(AccelerometerComponent.prototype, "xAcceleration", {
+        get: function () {
+            return this.x;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(AccelerometerComponent.prototype, "yAcceleration", {
+        get: function () {
+            return this.y;
+        },
+        enumerable: true,
+        configurable: true
+    });
     AccelerometerComponent.prototype.ngOnInit = function () {
         console.log('Engage');
         window.addEventListener('devicemotion', motion, false);
-        var lastX, lastY, lastZ;
-        var moveCounter = 0;
         function motion(e) {
             var acc = e.acceleration;
             if (!acc.hasOwnProperty('x')) {
                 acc = e.accelerationIncludingGravity;
             }
-            if (!acc.x)
-                return;
-            //only log if x,y,z > 1
-            if (Math.abs(acc.x) >= 1 &&
-                Math.abs(acc.y) >= 1 &&
-                Math.abs(acc.z) >= 1) {
-                //console.log('motion', acc);
-                if (!lastX) {
-                    lastX = acc.x;
-                    lastY = acc.y;
-                    lastZ = acc.z;
-                    return;
-                }
-                var deltaX = Math.abs(acc.x - lastX);
-                var deltaY = Math.abs(acc.y - lastY);
-                var deltaZ = Math.abs(acc.z - lastZ);
-                console.log(deltaX);
-                console.log(deltaY);
-                console.log(deltaZ);
-                if (deltaX + deltaY + deltaZ > 3) {
-                    moveCounter++;
-                }
-                else {
-                    moveCounter = Math.max(0, --moveCounter);
-                }
-                if (moveCounter > 2) {
-                    console.log('SHAKE!!!');
-                    moveCounter = 0;
-                }
-                lastX = acc.x;
-                lastY = acc.y;
-                lastZ = acc.z;
-            }
+            this.x = acc.x;
+            this.y = acc.y;
         }
-        var deviceMotion = new DeviceMotionEvent("devicemotion");
-        console.log(deviceMotion.acceleration.x);
         console.log(this.x);
         console.log(this.y);
-        alert("hello");
-        var x = 0;
-        var gyroPresent = false;
-        window.addEventListener("devicemotion", function (event) {
-            console.log("event detected");
-            x = event.acceleration.x;
-            console.log(x);
-            console.log(event.acceleration.y);
-            if (event.rotationRate.alpha || event.rotationRate.beta || event.rotationRate.gamma) {
-                gyroPresent = true;
-            }
-            console.log(gyroPresent);
-        });
-        this.isGyro = gyroPresent;
-        this.x = x;
     };
     AccelerometerComponent = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
