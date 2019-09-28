@@ -93,12 +93,18 @@ var AccelerometerComponent = /** @class */ (function () {
         configurable: true
     });
     AccelerometerComponent.prototype.ngOnInit = function () {
+        var _this = this;
         this.xAccBS.next(1);
         console.log(this.xAccBS);
         console.log('Engage');
         window.addEventListener('devicemotion', motion, false);
         var lastX = 0, lastY = 0, lastZ = 0;
         var moveCounter = 0;
+        var bs = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](0);
+        bs.subscribe(function (x) {
+            console.log("subscribe: ", x);
+            _this.xAccBS.next(x);
+        });
         this.xAccBS.next(lastX);
         console.log("BS updated");
         console.log("lastX: ", lastX);
@@ -112,6 +118,7 @@ var AccelerometerComponent = /** @class */ (function () {
             console.log(this.xAccBS);
             console.log("x: ", this.xAcc);
             console.log("y: ", this.yAcc);
+            bs.next(this.xAcc);
             // hypotenuse
             this.totalAcc = this.xAcc + this.yAcc;
             console.log("total: ", this.totalAcc);
