@@ -41,7 +41,7 @@ module.exports = ".garden {\r\n    position: relative;\r\n    width : 200px;\r\n
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<!-- Learn about this code on MDN: https://developer.mozilla.org/en-US/docs/Web/API/Detecting_device_orientation -->\n<h1> Hello</h1>\n<h1>Gyroscope compatible: {{isGyro}}</h1>\n\n<p>x: {{x}}</p>\n<p>y: {{y}}</p>"
+module.exports = "<!-- Learn about this code on MDN: https://developer.mozilla.org/en-US/docs/Web/API/Detecting_device_orientation -->\n<h1> 2 </h1>\n<h1>Gyroscope compatible: {{isGyro}}</h1>\n\n<p>x: {{x}}</p>\n<p>y: {{y}}</p>"
 
 /***/ }),
 
