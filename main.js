@@ -74,6 +74,46 @@ var AccelerometerComponent = /** @class */ (function () {
         this.isGyro = true;
     }
     AccelerometerComponent.prototype.ngOnInit = function () {
+        console.log('Engage');
+        window.addEventListener('devicemotion', motion, false);
+        var lastX, lastY, lastZ;
+        var moveCounter = 0;
+        function motion(e) {
+            var acc = e.acceleration;
+            if (!acc.hasOwnProperty('x')) {
+                acc = e.accelerationIncludingGravity;
+            }
+            if (!acc.x)
+                return;
+            //only log if x,y,z > 1
+            if (Math.abs(acc.x) >= 1 &&
+                Math.abs(acc.y) >= 1 &&
+                Math.abs(acc.z) >= 1) {
+                //console.log('motion', acc);
+                if (!lastX) {
+                    lastX = acc.x;
+                    lastY = acc.y;
+                    lastZ = acc.z;
+                    return;
+                }
+                var deltaX = Math.abs(acc.x - lastX);
+                var deltaY = Math.abs(acc.y - lastY);
+                var deltaZ = Math.abs(acc.z - lastZ);
+                if (deltaX + deltaY + deltaZ > 3) {
+                    moveCounter++;
+                }
+                else {
+                    moveCounter = Math.max(0, --moveCounter);
+                }
+                if (moveCounter > 2) {
+                    console.log('SHAKE!!!');
+                    moveCounter = 0;
+                }
+                lastX = acc.x;
+                lastY = acc.y;
+                lastZ = acc.z;
+            }
+        }
         var deviceMotion = new DeviceMotionEvent("devicemotion");
         console.log(deviceMotion.acceleration.x);
         console.log(this.x);
