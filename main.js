@@ -94,6 +94,7 @@ var AccelerometerComponent = /** @class */ (function () {
     });
     AccelerometerComponent.prototype.ngOnInit = function () {
         this.xAccBS.next(1);
+        console.log(this.xAccBS);
         console.log('Engage');
         window.addEventListener('devicemotion', motion, false);
         var lastX, lastY, lastZ;
@@ -105,7 +106,7 @@ var AccelerometerComponent = /** @class */ (function () {
             // }
             this.xAcc = acc.x;
             this.yAcc = acc.y;
-            this.xAccBS.next(acc.x);
+            console.log(this.xAccBS);
             console.log("x: ", this.xAcc);
             console.log("y: ", this.yAcc);
             // hypotenuse
@@ -155,6 +156,7 @@ var AccelerometerComponent = /** @class */ (function () {
                 lastZ = acc.z;
             }
         }
+        this.xAccBS.next(lastX);
     };
     AccelerometerComponent = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
