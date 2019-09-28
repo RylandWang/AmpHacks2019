@@ -41,7 +41,7 @@ module.exports = ".garden {\r\n    position: relative;\r\n    width : 200px;\r\n
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<!-- Learn about this code on MDN: https://developer.mozilla.org/en-US/docs/Web/API/Detecting_device_orientation -->\n\n<h1> 9 </h1>\n<h1>Accelerometer compatiable: {{isGyro}}</h1>\n\n<h2>x acceleration: {{xAccBS | async}} m/s^2</h2>\n<h2>y accleration: {{yAcceleration}} m/s^2</h2>"
+module.exports = "<!-- Learn about this code on MDN: https://developer.mozilla.org/en-US/docs/Web/API/Detecting_device_orientation -->\n\n<h1> 10 </h1>\n<h1>Accelerometer compatiable: {{isGyro}}</h1>\n\n<h2>x acceleration: {{xAccBS | async}} m/s^2</h2>\n<h2>y accleration: {{yAcceleration}} m/s^2</h2>"
 
 /***/ }),
 
@@ -97,8 +97,11 @@ var AccelerometerComponent = /** @class */ (function () {
         console.log(this.xAccBS);
         console.log('Engage');
         window.addEventListener('devicemotion', motion, false);
-        var lastX, lastY, lastZ;
+        var lastX = 0, lastY = 0, lastZ = 0;
         var moveCounter = 0;
+        this.xAccBS.next(lastX);
+        console.log("BS updated");
+        console.log("lastX: ", lastX);
         function motion(e) {
             var acc = e.acceleration;
             // if (!acc.hasOwnProperty('x')) {
@@ -157,9 +160,6 @@ var AccelerometerComponent = /** @class */ (function () {
                 console.log("lastX: ", lastX);
             }
         }
-        this.xAccBS.next(lastX);
-        console.log("BS updated");
-        console.log("lastX: ", lastX);
     };
     AccelerometerComponent = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
