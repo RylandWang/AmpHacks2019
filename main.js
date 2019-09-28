@@ -154,9 +154,12 @@ var AccelerometerComponent = /** @class */ (function () {
                 lastX = acc.x;
                 lastY = acc.y;
                 lastZ = acc.z;
+                console.log("lastX: ", lastX);
             }
         }
         this.xAccBS.next(lastX);
+        console.log("BS updated");
+        console.log("lastX: ", lastX);
     };
     AccelerometerComponent = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
