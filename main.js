@@ -41,7 +41,7 @@ module.exports = ".garden {\r\n    position: relative;\r\n    width : 200px;\r\n
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<!-- Learn about this code on MDN: https://developer.mozilla.org/en-US/docs/Web/API/Detecting_device_orientation -->\n<h1>Gyroscope compatible: {{isGyro}}</h1>\n\n<p>x: {{x}}</p>\n<p>y: {{y}}</p>"
+module.exports = "<!-- Learn about this code on MDN: https://developer.mozilla.org/en-US/docs/Web/API/Detecting_device_orientation -->\n<h1> Hello</h1>\n<h1>Gyroscope compatible: {{isGyro}}</h1>\n\n<p>x: {{x}}</p>\n<p>y: {{y}}</p>"
 
 /***/ }),
 
@@ -66,6 +66,7 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 
+// import { devModeEqual } from '@angular/core/src/change_detection/change_detection';
 var AccelerometerComponent = /** @class */ (function () {
     function AccelerometerComponent() {
         this.x = 0;
@@ -73,6 +74,10 @@ var AccelerometerComponent = /** @class */ (function () {
         this.isGyro = true;
     }
     AccelerometerComponent.prototype.ngOnInit = function () {
+        var deviceMotion = new DeviceMotionEvent("devicemotion");
+        console.log(deviceMotion.acceleration.x);
+        this.x = deviceMotion.acceleration.x;
+        this.y = deviceMotion.acceleration.y;
         var gyroPresent = false;
         var x = 0;
         var y = 0;
@@ -81,40 +86,8 @@ var AccelerometerComponent = /** @class */ (function () {
                 gyroPresent = true;
             }
             console.log(gyroPresent);
-            x = event.acceleration.x;
-            y = event.acceleration.y;
         });
         this.isGyro = gyroPresent;
-        this.x = x;
-        this.y = y;
-        var ball = document.querySelector('.ball');
-        var garden = document.querySelector('.garden');
-        var output = document.querySelector('.output');
-        var maxX = garden.clientWidth - ball.clientWidth;
-        var maxY = garden.clientHeight - ball.clientHeight;
-        function handleOrientation(event) {
-            var x = event.beta; // In degree in the range [-180,180]
-            var y = event.gamma; // In degree in the range [-90,90]
-            output.innerHTML = "beta : " + x + "\n";
-            output.innerHTML += "gamma: " + y + "\n";
-            // Because we don't want to have the device upside down
-            // We constrain the x value to the range [-90,90]
-            if (x > 90) {
-                x = 90;
-            }
-            ;
-            if (x < -90) {
-                x = -90;
-            }
-            ;
-            // To make computation easier we shift the range of 
-            // x and y to [0,180]
-            x += 90;
-            y += 90;
-            console.log((maxX * x / 180 - 10) + "px");
-            console.log((maxY * y / 180 - 10) + "px");
-        }
-        window.addEventListener('deviceorientation', handleOrientation);
     };
     AccelerometerComponent = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
