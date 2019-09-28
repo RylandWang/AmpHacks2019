@@ -41,7 +41,7 @@ module.exports = ".garden {\r\n    position: relative;\r\n    width : 200px;\r\n
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<!-- Learn about this code on MDN: https://developer.mozilla.org/en-US/docs/Web/API/Detecting_device_orientation -->\n\n<h1> 6 </h1>\n<h1>Accelerometer compatiable: {{isGyro}}</h1>\n\n<h2>x acceleration: {{xAccBS | async}} m/s^2</h2>\n<h2>y accleration: {{yAcceleration}} m/s^2</h2>"
+module.exports = "<!-- Learn about this code on MDN: https://developer.mozilla.org/en-US/docs/Web/API/Detecting_device_orientation -->\n\n<h1> 7 </h1>\n<h1>Accelerometer compatiable: {{isGyro}}</h1>\n\n<h2>x acceleration: {{xAccBS | async}} m/s^2</h2>\n<h2>y accleration: {{yAcceleration}} m/s^2</h2>"
 
 /***/ }),
 
@@ -110,6 +110,17 @@ var AccelerometerComponent = /** @class */ (function () {
             console.log("y: ", this.yAcc);
             // hypotenuse
             this.totalAcc = Math.sqrt((Math.pow(this.xAcc, 2) + Math.pow(this.yAcc, 2)));
+            console.log("total: ", this.totalAcc);
+            // gradual decceleration before eventual stop
+            if (this.totalAcc < 0) {
+                this.consistentDecceleration += 1;
+            }
+            else {
+                this.consistentDecceleration = 0;
+            }
+            // eventual stop ie 0 accleration
+            if (this.consistentDecceleration >= 50 && Math.abs(this.totalAcc) <= 0.5) {
+            }
             // if (!acc.x) return;
             //only log if x,y,z > 1
             if (Math.abs(acc.x) >= 1 &&
