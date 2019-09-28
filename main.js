@@ -41,7 +41,7 @@ module.exports = ".garden {\r\n    position: relative;\r\n    width : 200px;\r\n
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<!-- Learn about this code on MDN: https://developer.mozilla.org/en-US/docs/Web/API/Detecting_device_orientation -->\n\n<h1> 11 </h1>\n<h1>Accelerometer compatiable: {{isGyro}}</h1>\n\n<h2>x acceleration: {{xAccBS | async}} m/s^2</h2>\n<h2>y accleration: {{yAcceleration}} m/s^2</h2>"
+module.exports = "<!-- Learn about this code on MDN: https://developer.mozilla.org/en-US/docs/Web/API/Detecting_device_orientation -->\n\n<h1> 11 </h1>\n<h1>Accelerometer compatiable: {{isGyro}}</h1>\n\n<h2>x acceleration: {{xAccBS | async}} m/s^2</h2>\n<h2>y accleration: {{yAccBS | async}} m/s^2</h2>\n<h2>Aggregate acceleration: {{totalAccBS | async}} m/s^2</h2>\n\n<h3>Stops left: {{stopsLeftBS | async}}</h3>"
 
 /***/ }),
 
@@ -75,8 +75,11 @@ var AccelerometerComponent = /** @class */ (function () {
         this.yAcc = 0;
         this.totalAcc = 0;
         this.xAccBS = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](0);
-        this.consistentDecceleration = 0;
+        this.yAccBS = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](0);
+        this.totalAccBS = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](0);
         this.stopsLeft = 3;
+        this.stopsLeftBS = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](3);
+        this.consistentDecceleration = 0;
     }
     Object.defineProperty(AccelerometerComponent.prototype, "xAcceleration", {
         get: function () {
@@ -100,10 +103,20 @@ var AccelerometerComponent = /** @class */ (function () {
         window.addEventListener('devicemotion', motion, false);
         var lastX = 0, lastY = 0, lastZ = 0;
         var moveCounter = 0;
-        var bs = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](0);
-        bs.subscribe(function (x) {
+        var xbs = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](0);
+        var ybs = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](0);
+        var totalbs = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](0);
+        xbs.subscribe(function (x) {
             console.log("subscribe: ", x);
             _this.xAccBS.next(x);
+        });
+        ybs.subscribe(function (x) {
+            console.log("subscribe: ", x);
+            _this.yAccBS.next(x);
+        });
+        totalbs.subscribe(function (x) {
+            console.log("subscribe: ", x);
+            _this.totalAccBS.next(x);
         });
         this.xAccBS.next(lastX);
         console.log("BS updated");
@@ -113,13 +126,13 @@ var AccelerometerComponent = /** @class */ (function () {
             // if (!acc.hasOwnProperty('x')) {
             //   acc = e.accelerationIncludingGravity;
             // }
-            this.xAcc = acc.x;
-            this.yAcc = acc.y;
             console.log(this.xAccBS);
             console.log("x: ", this.xAcc);
             console.log("y: ", this.yAcc);
-            bs.next(this.xAcc);
-            // hypotenuse
+            xbs.next(acc.x);
+            ybs.next(acc.y);
+            var totalAcc = acc.x + acc.y;
+            totalbs.next(totalAcc);
             this.totalAcc = this.xAcc + this.yAcc;
             console.log("total: ", this.totalAcc);
             // gradual decceleration before eventual stop
