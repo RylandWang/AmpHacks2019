@@ -41,7 +41,7 @@ module.exports = ".garden {\r\n    position: relative;\r\n    width : 200px;\r\n
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<!-- Learn about this code on MDN: https://developer.mozilla.org/en-US/docs/Web/API/Detecting_device_orientation -->\n<h1> 4 </h1>\n<h1>Accelerometer compatiable: {{isGyro}}</h1>\n\n<h2>x acceleration: {{xAcceleration}} m/s^2</h2>\n<h2>y accleration: {{yAcceleration}} m/s^2</h2>"
+module.exports = "<!-- Learn about this code on MDN: https://developer.mozilla.org/en-US/docs/Web/API/Detecting_device_orientation -->\n\n<h1> 4 </h1>\n<h1>Accelerometer compatiable: {{isGyro}}</h1>\n\n<h2>x acceleration: {{xAccBS | async}} m/s^2</h2>\n<h2>y accleration: {{yAcceleration}} m/s^2</h2>"
 
 /***/ }),
 
@@ -70,38 +70,77 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 
 var AccelerometerComponent = /** @class */ (function () {
     function AccelerometerComponent() {
-        this.x = 0;
-        this.y = 0;
-        this.xObservable = new rxjs__WEBPACK_IMPORTED_MODULE_1__["Subject"]();
-        this.isGyro = true;
+        // absolute acceleration
+        this.xAcc = 0;
+        this.yAcc = 0;
+        this.totalAcc = 0;
+        this.xAccBS = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](0);
+        this.stopsLeft = 3;
     }
     Object.defineProperty(AccelerometerComponent.prototype, "xAcceleration", {
         get: function () {
-            return this.x;
+            return this.xAcc;
         },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(AccelerometerComponent.prototype, "yAcceleration", {
         get: function () {
-            return this.y;
+            return this.yAcc;
         },
         enumerable: true,
         configurable: true
     });
     AccelerometerComponent.prototype.ngOnInit = function () {
+        this.xAccBS.next(1);
         console.log('Engage');
         window.addEventListener('devicemotion', motion, false);
+        var lastX, lastY, lastZ;
+        var moveCounter = 0;
         function motion(e) {
             var acc = e.acceleration;
             if (!acc.hasOwnProperty('x')) {
                 acc = e.accelerationIncludingGravity;
             }
-            this.x = acc.x;
-            this.y = acc.y;
+            this.xAcc = acc.x;
+            this.yAcc = acc.y;
+            this.xAccBs.next(this.xAcc);
+            // hypotenuse
+            this.totalAcc = Math.sqrt((Math.pow(this.xAcc, 2) + Math.pow(this.yAcc, 2)));
+            if (!acc.x)
+                return;
+            //only log if x,y,z > 1
+            if (Math.abs(acc.x) >= 1 &&
+                Math.abs(acc.y) >= 1 &&
+                Math.abs(acc.z) >= 1) {
+                //console.log('motion', acc);
+                if (!lastX) {
+                    lastX = acc.x;
+                    lastY = acc.y;
+                    lastZ = acc.z;
+                    return;
+                }
+                var deltaX = Math.abs(acc.x - lastX);
+                var deltaY = Math.abs(acc.y - lastY);
+                var deltaZ = Math.abs(acc.z - lastZ);
+                console.log();
+                if (deltaX + deltaY + deltaZ > 3) {
+                    moveCounter++;
+                }
+                else {
+                    moveCounter = Math.max(0, --moveCounter);
+                }
+                if (moveCounter > 2) {
+                    console.log('SHAKE!!!');
+                    moveCounter = 0;
+                }
+                lastX = acc.x;
+                lastY = acc.y;
+                lastZ = acc.z;
+            }
+            console.log(this.xAcc);
+            console.log(this.yAcc);
         }
-        console.log(this.x);
-        console.log(this.y);
     };
     AccelerometerComponent = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
