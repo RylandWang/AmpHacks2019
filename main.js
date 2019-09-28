@@ -105,8 +105,9 @@ var AccelerometerComponent = /** @class */ (function () {
             }
             this.xAcc = acc.x;
             this.yAcc = acc.y;
-            console.log(this.xAcc);
-            this.xAccBS.next(this.xAcc);
+            this.xAccBS.next(acc.x);
+            console.log("x: ", this.xAcc);
+            console.log("y: ", this.yAcc);
             // hypotenuse
             this.totalAcc = Math.sqrt((Math.pow(this.xAcc, 2) + Math.pow(this.yAcc, 2)));
             // if (!acc.x) return;
