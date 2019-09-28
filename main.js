@@ -41,7 +41,7 @@ module.exports = ".garden {\r\n    position: relative;\r\n    width : 200px;\r\n
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<!-- Learn about this code on MDN: https://developer.mozilla.org/en-US/docs/Web/API/Detecting_device_orientation -->\n\n<h1> 11 </h1>\n<h1>Accelerometer compatiable: {{isGyro}}</h1>\n\n<h2>x acceleration: {{xAccBS | async}} m/s^2</h2>\n<h2>y accleration: {{yAccBS | async}} m/s^2</h2>\n<h2>Aggregate acceleration: {{totalAccBS | async}} m/s^2</h2>\n\n<h3>Stops left: {{stopsLeftBS | async}}</h3>"
+module.exports = "<!-- Learn about this code on MDN: https://developer.mozilla.org/en-US/docs/Web/API/Detecting_device_orientation -->\n\n<h1> 12 </h1>\n<h1>Accelerometer compatiable: {{isGyro}}</h1>\n\n<h2>x acceleration: {{xAccBS | async}} m/s^2</h2>\n<h2>y accleration: {{yAccBS | async}} m/s^2</h2>\n<h2>Aggregate acceleration: {{totalAccBS | async}} m/s^2</h2>\n\n<h3>Stops left: {{stopsLeftBS | async}}</h3>"
 
 /***/ }),
 
@@ -106,6 +106,7 @@ var AccelerometerComponent = /** @class */ (function () {
         var xbs = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](0);
         var ybs = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](0);
         var totalbs = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](0);
+        var stopsbs = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](this.stopsLeftBS.value);
         xbs.subscribe(function (x) {
             console.log("subscribe: ", x);
             _this.xAccBS.next(x);
@@ -117,6 +118,10 @@ var AccelerometerComponent = /** @class */ (function () {
         totalbs.subscribe(function (x) {
             console.log("subscribe: ", x);
             _this.totalAccBS.next(x);
+        });
+        stopsbs.subscribe(function (x) {
+            console.log("subscribe: ", x);
+            _this.stopsLeftBS.next(x);
         });
         this.xAccBS.next(lastX);
         console.log("BS updated");
@@ -143,8 +148,9 @@ var AccelerometerComponent = /** @class */ (function () {
                 this.consistentDecceleration = 0;
             }
             // eventual stop ie 0 accleration
-            if (this.consistentDecceleration >= 50 && Math.abs(this.totalAcc) <= 0.20) {
+            if (this.consistentDecceleration >= 20 && Math.abs(this.totalAccBS.value) <= 0.5) {
                 this.stopsLeft -= 1;
+                stopsbs.next(stopsbs.value - 1);
                 this.consistentDecceleration = 0;
                 console.log("stop detected");
             }
