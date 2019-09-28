@@ -1,0 +1,1 @@
+ng build --base-href "https://rylandwang.github.io/AmpHacks2019/" && ngh --dir dist/AmpHacks2019
