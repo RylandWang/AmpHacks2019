@@ -110,7 +110,7 @@ var AccelerometerComponent = /** @class */ (function () {
             console.log("x: ", this.xAcc);
             console.log("y: ", this.yAcc);
             // hypotenuse
-            this.totalAcc = Math.sqrt((Math.pow(this.xAcc, 2) + Math.pow(this.yAcc, 2)));
+            this.totalAcc = this.xAcc + this.yAcc;
             console.log("total: ", this.totalAcc);
             // gradual decceleration before eventual stop
             if (this.totalAcc < 0) {
@@ -120,7 +120,7 @@ var AccelerometerComponent = /** @class */ (function () {
                 this.consistentDecceleration = 0;
             }
             // eventual stop ie 0 accleration
-            if (this.consistentDecceleration >= 50 && Math.abs(this.totalAcc) <= 0.01) {
+            if (this.consistentDecceleration >= 50 && Math.abs(this.totalAcc) <= 0.20) {
                 this.stopsLeft -= 1;
                 this.consistentDecceleration = 0;
                 console.log("stop detected");
