@@ -41,7 +41,7 @@ module.exports = ".garden {\r\n    position: relative;\r\n    width : 200px;\r\n
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<!-- Learn about this code on MDN: https://developer.mozilla.org/en-US/docs/Web/API/Detecting_device_orientation -->\n<h1>Gyroscope compatible: {{isGyro}}</h1>"
+module.exports = "<!-- Learn about this code on MDN: https://developer.mozilla.org/en-US/docs/Web/API/Detecting_device_orientation -->\n<h1>Gyroscope compatible: {{isGyro}}</h1>\n\n<p>x: {{x}}</p>\n<p>y: {{y}}</p>"
 
 /***/ }),
 
@@ -74,13 +74,19 @@ var AccelerometerComponent = /** @class */ (function () {
     }
     AccelerometerComponent.prototype.ngOnInit = function () {
         var gyroPresent = false;
+        var x = 0;
+        var y = 0;
         window.addEventListener("devicemotion", function (event) {
             if (event.rotationRate.alpha || event.rotationRate.beta || event.rotationRate.gamma) {
                 gyroPresent = true;
             }
             console.log(gyroPresent);
+            x = event.acceleration.x;
+            y = event.acceleration.y;
         });
         this.isGyro = gyroPresent;
+        this.x = x;
+        this.y = y;
         var ball = document.querySelector('.ball');
         var garden = document.querySelector('.garden');
         var output = document.querySelector('.output');
