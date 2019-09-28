@@ -41,7 +41,7 @@ module.exports = ".garden {\r\n    position: relative;\r\n    width : 200px;\r\n
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<!-- Learn about this code on MDN: https://developer.mozilla.org/en-US/docs/Web/API/Detecting_device_orientation -->\n\n<h1> 7 </h1>\n<h1>Accelerometer compatiable: {{isGyro}}</h1>\n\n<h2>x acceleration: {{xAccBS | async}} m/s^2</h2>\n<h2>y accleration: {{yAcceleration}} m/s^2</h2>"
+module.exports = "<!-- Learn about this code on MDN: https://developer.mozilla.org/en-US/docs/Web/API/Detecting_device_orientation -->\n\n<h1> 8 </h1>\n<h1>Accelerometer compatiable: {{isGyro}}</h1>\n\n<h2>x acceleration: {{xAccBS | async}} m/s^2</h2>\n<h2>y accleration: {{yAcceleration}} m/s^2</h2>"
 
 /***/ }),
 
@@ -139,7 +139,7 @@ var AccelerometerComponent = /** @class */ (function () {
                 var deltaX = Math.abs(acc.x - lastX);
                 var deltaY = Math.abs(acc.y - lastY);
                 var deltaZ = Math.abs(acc.z - lastZ);
-                console.log();
+                console.log("delta x: ", deltaX);
                 if (deltaX + deltaY + deltaZ > 3) {
                     moveCounter++;
                 }
@@ -154,8 +154,6 @@ var AccelerometerComponent = /** @class */ (function () {
                 lastY = acc.y;
                 lastZ = acc.z;
             }
-            console.log(this.xAcc);
-            console.log(this.yAcc);
         }
     };
     AccelerometerComponent = __decorate([
