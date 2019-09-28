@@ -120,6 +120,8 @@ var AccelerometerComponent = /** @class */ (function () {
             }
             // eventual stop ie 0 accleration
             if (this.consistentDecceleration >= 50 && Math.abs(this.totalAcc) <= 0.5) {
+                this.stopsLeft -= 1;
+                this.consistentDecceleration = 0;
             }
             // if (!acc.x) return;
             //only log if x,y,z > 1
