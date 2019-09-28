@@ -148,7 +148,7 @@ var AccelerometerComponent = /** @class */ (function () {
                 this.consistentDecceleration = 0;
             }
             // eventual stop ie 0 accleration
-            if (this.consistentDecceleration >= 20 && Math.abs(this.totalAccBS.value) <= 0.5) {
+            if (this.consistentDecceleration >= 5 && Math.abs(this.totalAccBS.value) <= 0.5) {
                 this.stopsLeft -= 1;
                 stopsbs.next(stopsbs.value - 1);
                 this.consistentDecceleration = 0;
