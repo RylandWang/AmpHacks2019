@@ -99,6 +99,9 @@ var AccelerometerComponent = /** @class */ (function () {
                 var deltaX = Math.abs(acc.x - lastX);
                 var deltaY = Math.abs(acc.y - lastY);
                 var deltaZ = Math.abs(acc.z - lastZ);
+                console.log(deltaX);
+                console.log(deltaY);
+                console.log(deltaZ);
                 if (deltaX + deltaY + deltaZ > 3) {
                     moveCounter++;
                 }
