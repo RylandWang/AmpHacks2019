@@ -75,8 +75,9 @@ var AccelerometerComponent = /** @class */ (function () {
     AccelerometerComponent.prototype.ngOnInit = function () {
         var gyroPresent = false;
         window.addEventListener("devicemotion", function (event) {
-            if (event.rotationRate.alpha || event.rotationRate.beta || event.rotationRate.gamma)
+            if (event.rotationRate.alpha || event.rotationRate.beta || event.rotationRate.gamma) {
                 gyroPresent = true;
+            }
             console.log(gyroPresent);
         });
         this.isGyro = gyroPresent;
