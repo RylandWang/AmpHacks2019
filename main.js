@@ -41,7 +41,7 @@ module.exports = ".garden {\r\n    position: relative;\r\n    width : 200px;\r\n
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<!-- Learn about this code on MDN: https://developer.mozilla.org/en-US/docs/Web/API/Detecting_device_orientation -->\n\n<h1> 4 </h1>\n<h1>Accelerometer compatiable: {{isGyro}}</h1>\n\n<h2>x acceleration: {{xAccBS | async}} m/s^2</h2>\n<h2>y accleration: {{yAcceleration}} m/s^2</h2>"
+module.exports = "<!-- Learn about this code on MDN: https://developer.mozilla.org/en-US/docs/Web/API/Detecting_device_orientation -->\n\n<h1> 5 </h1>\n<h1>Accelerometer compatiable: {{isGyro}}</h1>\n\n<h2>x acceleration: {{xAccBS | async}} m/s^2</h2>\n<h2>y accleration: {{yAcceleration}} m/s^2</h2>"
 
 /***/ }),
 
@@ -75,6 +75,7 @@ var AccelerometerComponent = /** @class */ (function () {
         this.yAcc = 0;
         this.totalAcc = 0;
         this.xAccBS = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](0);
+        this.consistentDecceleration = 0;
         this.stopsLeft = 3;
     }
     Object.defineProperty(AccelerometerComponent.prototype, "xAcceleration", {
@@ -108,8 +109,7 @@ var AccelerometerComponent = /** @class */ (function () {
             this.xAccBS.next(this.xAcc);
             // hypotenuse
             this.totalAcc = Math.sqrt((Math.pow(this.xAcc, 2) + Math.pow(this.yAcc, 2)));
-            if (!acc.x)
-                return;
+            // if (!acc.x) return;
             //only log if x,y,z > 1
             if (Math.abs(acc.x) >= 1 &&
                 Math.abs(acc.y) >= 1 &&
