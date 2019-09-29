@@ -21,6 +21,8 @@ export class AccelerometerComponent implements OnInit {
 
   consistentDecceleration: number = 0
 
+  timeElapsed = new BehaviorSubject<number>(0);
+
   constructor() {
   }
 
@@ -33,6 +35,7 @@ export class AccelerometerComponent implements OnInit {
   }
   
   ngOnInit() {
+    var start = new Date().getTime()
     
     console.log('Engage');
     window.addEventListener('devicemotion', motion, false);
@@ -45,6 +48,7 @@ export class AccelerometerComponent implements OnInit {
     let totalAccbs = new BehaviorSubject<number>(0)
     let stopsbs = new BehaviorSubject<number>(this.stopsLeftBS.value)
     let consistentDeccelerationbs = new BehaviorSubject<number>(0)
+    let timeElapsed = new BehaviorSubject<number>(0);
 
     xbs.subscribe(x=>{
       console.log("subscribe: ", x)
@@ -66,16 +70,22 @@ export class AccelerometerComponent implements OnInit {
       console.log("decceleration in a row: ", x)
       this.consistentDecceleration = x
     })
+    timeElapsed.subscribe(x=>{
+      this.timeElapsed.next(x)
+    })
 
     function motion(e: DeviceMotionEvent,) {
       let acc = e.acceleration;
       // if (!acc.hasOwnProperty('x')) {
       //   acc = e.accelerationIncludingGravity;
       // }
+      var elapsed = new Date().getTime() - start;
+      console.log(elapsed)
 
       let accx = acc.x
       let accy = acc.y
       // calibrate for stationary device
+      // reset within margin of error
       if (Math.abs(accx) < 0.12){
         accx = 0
       }
@@ -87,7 +97,7 @@ export class AccelerometerComponent implements OnInit {
 
       xbs.next(accx)
       ybs.next(accy)
-      let totalAcc = accx + accy
+      let totalAcc = Math.round((accx + accy)*10000)/10000
       totalAccbs.next(totalAcc)
       
       // gradual decceleration before eventual stop
@@ -100,7 +110,7 @@ export class AccelerometerComponent implements OnInit {
       }
 
       // eventual stop ie complete zero accleration after gradual decceleration
-      if (consistentDeccelerationbs.value >= 52 && Math.abs(totalAccbs.value)<= 0.29){
+      if (consistentDeccelerationbs.value >= 39 && Math.abs(totalAccbs.value)<= 0.24){
         this.stopsLeft -= 1
         stopsbs.next(stopsbs.value-1)
         consistentDeccelerationbs.next(0)
@@ -109,7 +119,6 @@ export class AccelerometerComponent implements OnInit {
           window.alert("You have arrived at your stop")
           stopsbs.next(3)
         }
-        
       }
 
       // if (!acc.x) return;
