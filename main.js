@@ -133,6 +133,7 @@ var AccelerometerComponent = /** @class */ (function () {
             // }
             var accx = acc.x;
             var accy = acc.y;
+            // calibrate for stationary device
             if (Math.abs(accx) < 0.12) {
                 accx = 0;
             }
@@ -159,7 +160,10 @@ var AccelerometerComponent = /** @class */ (function () {
                 stopsbs.next(stopsbs.value - 1);
                 consistentDeccelerationbs.next(0);
                 console.log("stop detected");
-                window.alert("You have arrived at your stop");
+                if (stopsbs.value <= 0) {
+                    window.alert("You have arrived at your stop");
+                    stopsbs.next(3);
+                }
             }
             // if (!acc.x) return;
             //only log if x,y,z > 1
