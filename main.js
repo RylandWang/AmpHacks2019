@@ -41,7 +41,7 @@ module.exports = ".garden {\r\n    position: relative;\r\n    width : 200px;\r\n
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<!-- Learn about this code on MDN: https://developer.mozilla.org/en-US/docs/Web/API/Detecting_device_orientation -->\n\n<h1> 13 </h1>\n<h1>Accelerometer compatiable: {{isGyro}}</h1>\n\n<h2>x acceleration: {{xAccBS | async}} m/s^2</h2>\n<h2>y accleration: {{yAccBS | async}} m/s^2</h2>\n<h2>Aggregate acceleration: {{totalAccBS | async}} m/s^2</h2>\n\n<h3>Stops left: {{stopsLeftBS | async}}</h3>"
+module.exports = "<!-- Learn about this code on MDN: https://developer.mozilla.org/en-US/docs/Web/API/Detecting_device_orientation -->\n\n<h1> 14 </h1>\n<h1>Accelerometer compatiable: {{isGyro}}</h1>\n\n<h2>x acceleration: {{xAccBS | async}} m/s^2</h2>\n<h2>y accleration: {{yAccBS | async}} m/s^2</h2>\n<h2>Aggregate acceleration: {{totalAccBS | async}} m/s^2</h2>\n\n<h3>Stops left: {{stopsLeftBS | async}}</h3>"
 
 /***/ }),
 
@@ -148,16 +148,16 @@ var AccelerometerComponent = /** @class */ (function () {
             // gradual decceleration before eventual stop
             if (this.totalAcc < 0) {
                 this.consistentDecceleration += 1;
-                this.consistentDeccelerationbs.next(this.consistentDeccelerationbs.value + 1);
+                consistentDeccelerationbs.next(consistentDeccelerationbs.value + 1);
             }
             else {
-                this.consistentDeccelerationbs.next(0);
+                consistentDeccelerationbs.next(0);
             }
             // eventual stop ie 0 accleration
-            if (this.consistentDeccelerationbs.value >= 5 && Math.abs(this.totalAccBS.value) <= 0.5) {
+            if (consistentDeccelerationbs.value >= 5 && Math.abs(this.totalAccBS.value) <= 0.5) {
                 this.stopsLeft -= 1;
                 stopsbs.next(stopsbs.value - 1);
-                this.consistentDeccelerationbs.next(0);
+                consistentDeccelerationbs.next(0);
                 console.log("stop detected");
             }
             // if (!acc.x) return;
