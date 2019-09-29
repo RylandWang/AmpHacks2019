@@ -8,11 +8,15 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class AccelerometerComponent implements OnInit {
   // absolute acceleration
-  xAccBS = new BehaviorSubject<number>(0); // x-axis acceleration
-  yAccBS = new BehaviorSubject<number>(0); // y-axis acceleration
-  totalAccBS = new BehaviorSubject<number>(0); // aggregate acceleration
+  xAcc: number = 0
+  yAcc: number = 0
+  totalAcc: number = 0
 
-  stopsLeft: number = 3; //TODO: integrate with Google Map API to autmatically determine
+  xAccBS = new BehaviorSubject<number>(0);
+  yAccBS = new BehaviorSubject<number>(0);
+  totalAccBS = new BehaviorSubject<number>(0);
+
+  stopsLeft: number = 3;
   stopsLeftBS = new BehaviorSubject<number>(3);
 
   consistentDecceleration: number = 0
@@ -20,17 +24,20 @@ export class AccelerometerComponent implements OnInit {
   constructor() {
   }
 
-  ngOnInit() {
-    window.navigator.vibrate(200);
-    console.log('Engage');
-    this.motionDetect();
-
+  get xAcceleration(){
+    return this.xAcc
   }
 
-  motionDetect() {
+  get yAcceleration(){
+    return this.yAcc
+  }
+  
+  ngOnInit() {
+    
+    console.log('Engage');
     window.addEventListener('devicemotion', motion, false);
 
-    let lastX = 0, lastY = 0, lastZ = 0
+    let lastX = 0, lastY = 0, lastZ =0
     let moveCounter = 0;
 
     let xbs = new BehaviorSubject<number>(0)
@@ -39,80 +46,79 @@ export class AccelerometerComponent implements OnInit {
     let stopsbs = new BehaviorSubject<number>(this.stopsLeftBS.value)
     let consistentDeccelerationbs = new BehaviorSubject<number>(0)
 
-    // update behaviour subjects
-    xbs.subscribe(x => {
+    xbs.subscribe(x=>{
       console.log("subscribe: ", x)
       this.xAccBS.next(x)
     })
-    ybs.subscribe(x => {
+    ybs.subscribe(x=>{
       console.log("subscribe: ", x)
       this.yAccBS.next(x)
     })
-    totalAccbs.subscribe(x => {
+    totalAccbs.subscribe(x=>{
       console.log("subscribe: ", x)
       this.totalAccBS.next(x)
     })
-    stopsbs.subscribe(x => {
+    stopsbs.subscribe(x=>{
       console.log("subscribe: ", x)
       this.stopsLeftBS.next(x)
     })
-    consistentDeccelerationbs.subscribe(x => {
+    consistentDeccelerationbs.subscribe(x=>{
       console.log("decceleration in a row: ", x)
       this.consistentDecceleration = x
     })
 
-    this.xAccBS.next(lastX)
-    console.log("BS updated")
-    console.log("lastX: ", lastX)
-
-    /** Acceleration algorithm */
-    function motion(e: DeviceMotionEvent, ) {
+    function motion(e: DeviceMotionEvent,) {
       let acc = e.acceleration;
       // if (!acc.hasOwnProperty('x')) {
       //   acc = e.accelerationIncludingGravity;
       // }
 
-      // get x, y and aggregate acceleration
-      let accX = acc.x
-      let accY = acc.y
+      let accx = acc.x
+      let accy = acc.y
       // calibrate for stationary device
-      if (Math.abs(acc.x) <= 0.16){
-        accX = 0
+      if (Math.abs(accx) < 0.12){
+        accx = 0
       }
-      if (Math.abs(acc.y) <= 0.16){
-        accY = 0
+      if (Math.abs(accy) < 0.12){
+        accy = 0
       }
-      xbs.next(Math.round(accX * 10000) / 10000)
-      ybs.next(Math.round(accY * 10000) / 10000)
-      let totalAcc = Math.round((acc.x + acc.y) * 10000) / 10000
-      totalAccbs.next(totalAcc)
+      accx = Math.round(accx * 10000) / 10000
+      accy = Math.round(accy * 10000) / 10000
 
+      xbs.next(accx)
+      ybs.next(accy)
+      let totalAcc = accx + accy
+      totalAccbs.next(totalAcc)
+      
       // gradual decceleration before eventual stop
-      if (totalAccbs.value < 0) {
+      if (totalAccbs.value < 0){
         this.consistentDecceleration += 1
-        consistentDeccelerationbs.next(consistentDeccelerationbs.value + 1)
+        consistentDeccelerationbs.next(consistentDeccelerationbs.value+1)
       }
-      else {
+      else{
         consistentDeccelerationbs.next(0)
       }
 
       // eventual stop ie complete zero accleration after gradual decceleration
-      if (consistentDeccelerationbs.value >= 52 && Math.abs(totalAccbs.value) == 0) {
-        stopsbs.next(stopsbs.value - 1)
+      if (consistentDeccelerationbs.value >= 52 && Math.abs(totalAccbs.value)<= 0.29){
+        this.stopsLeft -= 1
+        stopsbs.next(stopsbs.value-1)
         consistentDeccelerationbs.next(0)
         console.log("stop detected")
-        if (stopsbs.value == 0) {
-          window.alert("You have arrived at your stop.")
-          window.navigator.vibrate(0);
+        if (stopsbs.value <= 0){
+          window.alert("You have arrived at your stop")
+          stopsbs.next(3)
         }
+        
       }
+
       // if (!acc.x) return;
 
       //only log if x,y,z > 1
       if (Math.abs(acc.x) >= 1 &&
         Math.abs(acc.y) >= 1 &&
         Math.abs(acc.z) >= 1) {
-        //console.log('motion', acc);
+
         if (!lastX) {
           lastX = acc.x;
           lastY = acc.y;
@@ -124,17 +130,15 @@ export class AccelerometerComponent implements OnInit {
         let deltaY = Math.abs(acc.y - lastY);
         let deltaZ = Math.abs(acc.z - lastZ);
 
+
         if (deltaX + deltaY + deltaZ > 3) {
           moveCounter++;
         } else {
           moveCounter = Math.max(0, --moveCounter);
-        }
-         
         }
 
       }
     }
 
   }
-
-
+  }
