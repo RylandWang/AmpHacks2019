@@ -41,7 +41,7 @@ module.exports = ".garden {\r\n    position: relative;\r\n    width : 200px;\r\n
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<!-- Learn about this code on MDN: https://developer.mozilla.org/en-US/docs/Web/API/Detecting_device_orientation -->\n<link rel=\"stylesheet\" href=\"https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css\" integrity=\"sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T\" crossorigin=\"anonymous\">\n<div style=\"margin-left: 2em\">\n\n<p> 17 </p>\n<h1> Your acceleration: </h1>\n\n<h3>x: {{xAccBS | async}} m/s^2</h3>\n<h3>y: {{yAccBS | async}} m/s^2</h3>\n<h3>Aggregate: {{totalAccBS | async}} m/s^2</h3>\n\n<h1 style=\"color:darkgreen; margin-top:1em;\">Bus stops left: {{stopsLeftBS | async}}</h1>\n\n</div>"
+module.exports = "<!-- Learn about this code on MDN: https://developer.mozilla.org/en-US/docs/Web/API/Detecting_device_orientation -->\n<link rel=\"stylesheet\" href=\"https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css\" integrity=\"sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T\" crossorigin=\"anonymous\">\n\n<div style=\"margin-left: 2em\">\n\n<p> Build number: 17 </p>\n<h1> Your acceleration: </h1>\n\n<h3>x: {{xAccBS | async}} m/s^2</h3>\n<h3>y: {{yAccBS | async}} m/s^2</h3>\n<h3>Aggregate: {{totalAccBS | async}} m/s^2</h3>\n\n<h1 style=\"color:darkgreen; margin-top:1em;\">Bus stops left: {{stopsLeftBS | async}}</h1>\n\n</div>"
 
 /***/ }),
 
@@ -79,11 +79,12 @@ var AccelerometerComponent = /** @class */ (function () {
         this.consistentDecceleration = 0;
     }
     AccelerometerComponent.prototype.ngOnInit = function () {
-        var _this = this;
-        this.xAccBS.next(1);
-        console.log(this.xAccBS);
+        window.navigator.vibrate(200);
         console.log('Engage');
-        // detect device motion
+        this.motionDetect();
+    };
+    AccelerometerComponent.prototype.motionDetect = function () {
+        var _this = this;
         window.addEventListener('devicemotion', motion, false);
         var lastX = 0, lastY = 0, lastZ = 0;
         var moveCounter = 0;
@@ -92,6 +93,7 @@ var AccelerometerComponent = /** @class */ (function () {
         var totalAccbs = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](0);
         var stopsbs = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](this.stopsLeftBS.value);
         var consistentDeccelerationbs = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](0);
+        // update behaviour subjects
         xbs.subscribe(function (x) {
             console.log("subscribe: ", x);
             _this.xAccBS.next(x);
@@ -115,14 +117,24 @@ var AccelerometerComponent = /** @class */ (function () {
         this.xAccBS.next(lastX);
         console.log("BS updated");
         console.log("lastX: ", lastX);
+        /** Acceleration algorithm */
         function motion(e) {
             var acc = e.acceleration;
             // if (!acc.hasOwnProperty('x')) {
             //   acc = e.accelerationIncludingGravity;
             // }
             // get x, y and aggregate acceleration
-            xbs.next(Math.round(acc.x * 10000) / 10000);
-            ybs.next(Math.round(acc.y * 10000) / 10000);
+            var accX = acc.x;
+            var accY = acc.y;
+            // calibrate for stationary device
+            if (Math.abs(acc.x) <= 0.16) {
+                accX = 0;
+            }
+            if (Math.abs(acc.y) <= 0.16) {
+                accY = 0;
+            }
+            xbs.next(Math.round(accX * 10000) / 10000);
+            ybs.next(Math.round(accY * 10000) / 10000);
             var totalAcc = Math.round((acc.x + acc.y) * 10000) / 10000;
             totalAccbs.next(totalAcc);
             // gradual decceleration before eventual stop
@@ -134,12 +146,13 @@ var AccelerometerComponent = /** @class */ (function () {
                 consistentDeccelerationbs.next(0);
             }
             // eventual stop ie complete zero accleration after gradual decceleration
-            if (consistentDeccelerationbs.value >= 50 && Math.abs(totalAccbs.value) <= 0.5) {
+            if (consistentDeccelerationbs.value >= 52 && Math.abs(totalAccbs.value) == 0) {
                 stopsbs.next(stopsbs.value - 1);
                 consistentDeccelerationbs.next(0);
                 console.log("stop detected");
                 if (stopsbs.value == 0) {
                     window.alert("You have arrived at your stop.");
+                    window.navigator.vibrate(0);
                 }
             }
             // if (!acc.x) return;
@@ -157,21 +170,12 @@ var AccelerometerComponent = /** @class */ (function () {
                 var deltaX = Math.abs(acc.x - lastX);
                 var deltaY = Math.abs(acc.y - lastY);
                 var deltaZ = Math.abs(acc.z - lastZ);
-                console.log("delta x: ", deltaX);
                 if (deltaX + deltaY + deltaZ > 3) {
                     moveCounter++;
                 }
                 else {
                     moveCounter = Math.max(0, --moveCounter);
                 }
-                if (moveCounter > 2) {
-                    console.log('SHAKE!!!');
-                    moveCounter = 0;
-                }
-                lastX = acc.x;
-                lastY = acc.y;
-                lastZ = acc.z;
-                console.log("lastX: ", lastX);
             }
         }
     };
@@ -269,7 +273,7 @@ var __decorate = (undefined && undefined.__decorate) || function (decorators, ta
 
 var AppComponent = /** @class */ (function () {
     function AppComponent() {
-        this.title = 'AMPHACKS2019';
+        this.title = 'Aweary';
     }
     AppComponent = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
