@@ -105,7 +105,7 @@ var AccelerometerComponent = /** @class */ (function () {
         var moveCounter = 0;
         var xbs = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](0);
         var ybs = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](0);
-        var totalbs = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](0);
+        var totalAccbs = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](0);
         var stopsbs = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](this.stopsLeftBS.value);
         var consistentDeccelerationbs = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](0);
         xbs.subscribe(function (x) {
@@ -116,7 +116,7 @@ var AccelerometerComponent = /** @class */ (function () {
             console.log("subscribe: ", x);
             _this.yAccBS.next(x);
         });
-        totalbs.subscribe(function (x) {
+        totalAccbs.subscribe(function (x) {
             console.log("subscribe: ", x);
             _this.totalAccBS.next(x);
         });
@@ -142,11 +142,9 @@ var AccelerometerComponent = /** @class */ (function () {
             xbs.next(acc.x);
             ybs.next(acc.y);
             var totalAcc = acc.x + acc.y;
-            totalbs.next(totalAcc);
-            this.totalAcc = this.xAcc + this.yAcc;
-            console.log("total: ", this.totalAcc);
+            totalAccbs.next(totalAcc);
             // gradual decceleration before eventual stop
-            if (this.totalAcc < 0) {
+            if (totalAccbs.value < 0) {
                 this.consistentDecceleration += 1;
                 consistentDeccelerationbs.next(consistentDeccelerationbs.value + 1);
             }
@@ -154,7 +152,7 @@ var AccelerometerComponent = /** @class */ (function () {
                 consistentDeccelerationbs.next(0);
             }
             // eventual stop ie 0 accleration
-            if (consistentDeccelerationbs.value >= 5 && Math.abs(this.totalAccBS.value) <= 0.5) {
+            if (consistentDeccelerationbs.value >= 20 && Math.abs(this.totalAccBS.value) <= 0.5) {
                 this.stopsLeft -= 1;
                 stopsbs.next(stopsbs.value - 1);
                 consistentDeccelerationbs.next(0);
