@@ -41,7 +41,7 @@ module.exports = ".garden {\r\n    position: relative;\r\n    width : 200px;\r\n
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<!-- Learn about this code on MDN: https://developer.mozilla.org/en-US/docs/Web/API/Detecting_device_orientation -->\n<link rel=\"stylesheet\" href=\"https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css\" integrity=\"sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T\" crossorigin=\"anonymous\">\n<div style=\"margin-left: 2em\">\n\n<h1> 17 </h1>\n<h1> Your current acceleration: </h1>\n\n<h2>x: {{xAccBS | async}} m/s^2</h2>\n<h2>y: {{yAccBS | async}} m/s^2</h2>\n<h2>Aggregate: {{totalAccBS | async}} m/s^2</h2>\n\n<h1 style=\"color:darkgreen; margin-top:1em;\">Bus stops left: {{stopsLeftBS | async}}</h1>\n\n</div>"
+module.exports = "<!-- Learn about this code on MDN: https://developer.mozilla.org/en-US/docs/Web/API/Detecting_device_orientation -->\n<link rel=\"stylesheet\" href=\"https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css\" integrity=\"sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T\" crossorigin=\"anonymous\">\n<div style=\"margin-left: 2em\">\n\n<p> 17 </p>\n<h1> Youracceleration: </h1>\n\n<h3>x: {{xAccBS | async}} m/s^2</h3>\n<h3>y: {{yAccBS | async}} m/s^2</h3>\n<h3>Aggregate: {{totalAccBS | async}} m/s^2</h3>\n\n<h1 style=\"color:darkgreen; margin-top:1em;\">Bus stops left: {{stopsLeftBS | async}}</h1>\n\n</div>"
 
 /***/ }),
 
