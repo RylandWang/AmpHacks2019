@@ -41,7 +41,7 @@ module.exports = ".body {\r\n  background-color: #201F35;\r\n  color: #fff;\r\n 
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<!-- Learn about this code on MDN: https://developer.mozilla.org/en-US/docs/Web/API/Detecting_device_orientation -->\r\n<link rel=\"stylesheet\" href=\"https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css\" integrity=\"sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T\" crossorigin=\"anonymous\">\r\n\r\n<div class=\"body\">\r\n\r\n<p> Build number: 23</p>\r\n<h1> Your acceleration: </h1>\r\n\r\n<h3>x: {{xAcceleration | async}} m/s^2</h3>\r\n<h3>y: {{yAcceleration | async}} m/s^2</h3>\r\n<h3>Aggregate: {{totalAccBS | async}}</h3>\r\n\r\n<h1 style=\"color:darkgreen; margin-top:1em;\">Bus stops left: {{stopsLeftBS | async}}</h1>\r\n<h3 style=\"color:dodgerblue; margin-top:1em;\">Time elapsed: {{timeElapsed | async}}</h3>\r\n<h3 style=\"color:dodgerblue;\">velocity: {{velocity | async}}</h3>\r\n<h3 style=\"color:dodgerblue;\">distance travelled: {{distance | async}}</h3>\r\n\r\n</div>"
+module.exports = "<!-- Learn about this code on MDN: https://developer.mozilla.org/en-US/docs/Web/API/Detecting_device_orientation -->\r\n<link rel=\"stylesheet\" href=\"https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css\" integrity=\"sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T\" crossorigin=\"anonymous\">\r\n\r\n<div class=\"body\">\r\n\r\n<p> Build number: 23</p>\r\n<h1> Your acceleration: </h1>\r\n\r\n<h3>x: {{xAcceleration | async}} m/s^2</h3>\r\n<h3>y: {{yAcceleration | async}} m/s^2</h3>\r\n<h3>Aggregate: {{totalAccBS | async}}</h3>\r\n\r\n<h1 style=\"color:darkgreen; margin-top:1em;\">Bus stops left: {{stopsLeftBS | async}}</h1>\r\n<h3 style=\"color:dodgerblue; margin-top:1em;\">Time elapsed: {{timeElapsed | async}}</h3>\r\n<!-- <h3 style=\"color:dodgerblue;\">velocity: {{velocity | async}}</h3>\r\n<h3 style=\"color:dodgerblue;\">distance travelled: {{distance | async}}</h3> -->\r\n\r\n</div>"
 
 /***/ }),
 
@@ -82,11 +82,12 @@ var AccelerometerComponent = /** @class */ (function () {
     }
     AccelerometerComponent.prototype.ngOnInit = function () {
         var _this = this;
+        new Audio("src/alert.mps3").play();
         var start = new Date().getTime();
         console.log('Engage');
         window.addEventListener('devicemotion', motion, false);
         var lastX = 0, lastY = 0, lastZ = 0;
-        var ERROR_MARGIN = 0.12;
+        var ERROR_MARGIN = 0.15;
         var xbs = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](0);
         var ybs = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](0);
         var totalAccbs = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](0);
@@ -174,6 +175,7 @@ var AccelerometerComponent = /** @class */ (function () {
                 console.log("stop detected");
                 if (stopsbs.value <= 0) {
                     window.alert("You have arrived at your stop");
+                    new Audio("src/alert.mps3").play();
                     stopsbs.next(3);
                     timeElapsed.next(0);
                 }
