@@ -98,6 +98,7 @@ var AccelerometerComponent = /** @class */ (function () {
     });
     AccelerometerComponent.prototype.ngOnInit = function () {
         var _this = this;
+        window.navigator.vibrate(200);
         var start = new Date().getTime();
         console.log('Engage');
         window.addEventListener('devicemotion', motion, false);
