@@ -134,7 +134,7 @@ var AccelerometerComponent = /** @class */ (function () {
             // if (!acc.hasOwnProperty('x')) {
             //   acc = e.accelerationIncludingGravity;
             // }
-            var elapsed = new Date().getTime() - start;
+            var elapsed = (new Date().getTime() - start) / 1000;
             prevTime = timeElapsed.value;
             deltaTime = elapsed - prevTime;
             timeElapsed.next(elapsed);
