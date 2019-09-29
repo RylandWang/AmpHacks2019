@@ -139,6 +139,7 @@ var AccelerometerComponent = /** @class */ (function () {
             // }
             var elapsed = new Date().getTime() - start;
             console.log(elapsed);
+            timeElapsed.next(elapsed);
             var accx = acc.x;
             var accy = acc.y;
             // calibrate for stationary device
