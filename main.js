@@ -41,7 +41,7 @@ module.exports = ".garden {\r\n    position: relative;\r\n    width : 200px;\r\n
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<!-- Learn about this code on MDN: https://developer.mozilla.org/en-US/docs/Web/API/Detecting_device_orientation -->\n\n<h1> 12 </h1>\n<h1>Accelerometer compatiable: {{isGyro}}</h1>\n\n<h2>x acceleration: {{xAccBS | async}} m/s^2</h2>\n<h2>y accleration: {{yAccBS | async}} m/s^2</h2>\n<h2>Aggregate acceleration: {{totalAccBS | async}} m/s^2</h2>\n\n<h3>Stops left: {{stopsLeftBS | async}}</h3>"
+module.exports = "<!-- Learn about this code on MDN: https://developer.mozilla.org/en-US/docs/Web/API/Detecting_device_orientation -->\n\n<h1> 13 </h1>\n<h1>Accelerometer compatiable: {{isGyro}}</h1>\n\n<h2>x acceleration: {{xAccBS | async}} m/s^2</h2>\n<h2>y accleration: {{yAccBS | async}} m/s^2</h2>\n<h2>Aggregate acceleration: {{totalAccBS | async}} m/s^2</h2>\n\n<h3>Stops left: {{stopsLeftBS | async}}</h3>"
 
 /***/ }),
 
