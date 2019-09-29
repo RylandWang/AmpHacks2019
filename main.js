@@ -147,7 +147,7 @@ var AccelerometerComponent = /** @class */ (function () {
             if (Math.abs(accx) < 0.12) {
                 accx = 0;
             }
-            if (Math.abs(accy) < 0.12) {
+            if (Math.abs(accy) < 0.16) {
                 accy = 0;
             }
             accx = Math.round(accx * 10000) / 10000;
@@ -173,6 +173,7 @@ var AccelerometerComponent = /** @class */ (function () {
                 if (stopsbs.value <= 0) {
                     window.alert("You have arrived at your stop");
                     stopsbs.next(3);
+                    timeElapsed.next(0);
                 }
             }
             // if (!acc.x) return;
