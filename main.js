@@ -41,7 +41,7 @@ module.exports = ".garden {\r\n    position: relative;\r\n    width : 200px;\r\n
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<!-- Learn about this code on MDN: https://developer.mozilla.org/en-US/docs/Web/API/Detecting_device_orientation -->\n<link rel=\"stylesheet\" href=\"https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css\" integrity=\"sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T\" crossorigin=\"anonymous\">\n\n<div style=\"margin-left: 2em\">\n\n<p> Build number: 20</p>\n<h1> Your acceleration: </h1>\n\n<h3>x: {{xAccBS | async}} m/s^2</h3>\n<h3>y: {{yAccBS | async}} m/s^2</h3>\n<h3>Aggregate: {{totalAccBS | async}} m/s^2</h3>\n\n<h1 style=\"color:darkgreen; margin-top:1em;\">Bus stops left: {{stopsLeftBS | async}}</h1>\n\n</div>"
+module.exports = "<!-- Learn about this code on MDN: https://developer.mozilla.org/en-US/docs/Web/API/Detecting_device_orientation -->\n<link rel=\"stylesheet\" href=\"https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css\" integrity=\"sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T\" crossorigin=\"anonymous\">\n\n<div style=\"margin-left: 2em\">\n\n<p> Build number: 21</p>\n<h1> Your acceleration: </h1>\n\n<h3>x: {{xAccBS | async}} m/s^2</h3>\n<h3>y: {{yAccBS | async}} m/s^2</h3>\n<h3>Aggregate: {{totalAccBS | async}} m/s^2</h3>\n\n<h1 style=\"color:darkgreen; margin-top:1em;\">Bus stops left: {{stopsLeftBS | async}}</h1>\n\n</div>"
 
 /***/ }),
 
@@ -79,12 +79,10 @@ var AccelerometerComponent = /** @class */ (function () {
         this.consistentDecceleration = 0;
     }
     AccelerometerComponent.prototype.ngOnInit = function () {
+        var _this = this;
         window.navigator.vibrate(200);
         console.log('Engage');
-        this.motionDetect();
-    };
-    AccelerometerComponent.prototype.motionDetect = function () {
-        var _this = this;
+        /** motion detection */
         window.addEventListener('devicemotion', motion, false);
         var lastX = 0, lastY = 0, lastZ = 0;
         var moveCounter = 0;
@@ -117,15 +115,25 @@ var AccelerometerComponent = /** @class */ (function () {
         this.xAccBS.next(lastX);
         console.log("BS updated");
         console.log("lastX: ", lastX);
-        /** Acceleration algorithm */
+        /** ____Acceleration algorithm____ */
         function motion(e) {
             var acc = e.acceleration;
             // if (!acc.hasOwnProperty('x')) {
             //   acc = e.accelerationIncludingGravity;
             // }
             // get x, y and aggregate acceleration
-            xbs.next(Math.round(acc.x * 10000) / 10000);
-            ybs.next(Math.round(acc.y * 10000) / 10000);
+            var accX = acc.x;
+            var accY = acc.y;
+            console.log(accX);
+            // calibrate for stationary device
+            if (Math.abs(acc.x) <= 0.1) {
+                accX = 0;
+            }
+            if (Math.abs(acc.y) <= 0.1) {
+                accY = 0;
+            }
+            xbs.next(Math.round(accX * 10000) / 10000);
+            ybs.next(Math.round(accY * 10000) / 10000);
             var totalAcc = Math.round((acc.x + acc.y) * 10000) / 10000;
             totalAccbs.next(totalAcc);
             // gradual decceleration before eventual stop
