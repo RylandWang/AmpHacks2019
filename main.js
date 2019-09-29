@@ -71,18 +71,33 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 var AccelerometerComponent = /** @class */ (function () {
     function AccelerometerComponent() {
         // absolute acceleration
-        this.xAccBS = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](0); // x-axis acceleration
-        this.yAccBS = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](0); // y-axis acceleration
-        this.totalAccBS = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](0); // aggregate acceleration
-        this.stopsLeft = 3; //TODO: integrate with Google Map API to autmatically determine
+        this.xAcc = 0;
+        this.yAcc = 0;
+        this.totalAcc = 0;
+        this.xAccBS = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](0);
+        this.yAccBS = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](0);
+        this.totalAccBS = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](0);
+        this.stopsLeft = 3;
         this.stopsLeftBS = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](3);
         this.consistentDecceleration = 0;
     }
+    Object.defineProperty(AccelerometerComponent.prototype, "xAcceleration", {
+        get: function () {
+            return this.xAcc;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(AccelerometerComponent.prototype, "yAcceleration", {
+        get: function () {
+            return this.yAcc;
+        },
+        enumerable: true,
+        configurable: true
+    });
     AccelerometerComponent.prototype.ngOnInit = function () {
         var _this = this;
-        window.navigator.vibrate(200);
         console.log('Engage');
-        /** motion detection */
         window.addEventListener('devicemotion', motion, false);
         var lastX = 0, lastY = 0, lastZ = 0;
         var moveCounter = 0;
@@ -91,7 +106,6 @@ var AccelerometerComponent = /** @class */ (function () {
         var totalAccbs = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](0);
         var stopsbs = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](this.stopsLeftBS.value);
         var consistentDeccelerationbs = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](0);
-        // update behaviour subjects
         xbs.subscribe(function (x) {
             console.log("subscribe: ", x);
             _this.xAccBS.next(x);
@@ -115,26 +129,17 @@ var AccelerometerComponent = /** @class */ (function () {
         this.xAccBS.next(lastX);
         console.log("BS updated");
         console.log("lastX: ", lastX);
-        /** ____Acceleration algorithm____ */
         function motion(e) {
             var acc = e.acceleration;
             // if (!acc.hasOwnProperty('x')) {
             //   acc = e.accelerationIncludingGravity;
             // }
-            // get x, y and aggregate acceleration
-            var accX = acc.x;
-            var accY = acc.y;
-            console.log(accX);
-            // calibrate for stationary device
-            if (Math.abs(acc.x) <= 0.1) {
-                accX = 0;
-            }
-            if (Math.abs(acc.y) <= 0.1) {
-                accY = 0;
-            }
-            xbs.next(Math.round(accX * 10000) / 10000);
-            ybs.next(Math.round(accY * 10000) / 10000);
-            var totalAcc = Math.round((acc.x + acc.y) * 10000) / 10000;
+            console.log(this.xAccBS);
+            console.log("x: ", this.xAcc);
+            console.log("y: ", this.yAcc);
+            xbs.next(acc.x);
+            ybs.next(acc.y);
+            var totalAcc = acc.x + acc.y;
             totalAccbs.next(totalAcc);
             // gradual decceleration before eventual stop
             if (totalAccbs.value < 0) {
@@ -145,14 +150,12 @@ var AccelerometerComponent = /** @class */ (function () {
                 consistentDeccelerationbs.next(0);
             }
             // eventual stop ie complete zero accleration after gradual decceleration
-            if (consistentDeccelerationbs.value >= 52 && Math.abs(totalAccbs.value) == 0) {
+            if (consistentDeccelerationbs.value >= 50 && Math.abs(totalAccbs.value) <= 0.5) {
+                this.stopsLeft -= 1;
                 stopsbs.next(stopsbs.value - 1);
                 consistentDeccelerationbs.next(0);
                 console.log("stop detected");
-                if (stopsbs.value == 0) {
-                    window.alert("You have arrived at your stop.");
-                    window.navigator.vibrate(0);
-                }
+                window.alert("Your stop!!!!");
             }
             // if (!acc.x) return;
             //only log if x,y,z > 1
@@ -169,12 +172,21 @@ var AccelerometerComponent = /** @class */ (function () {
                 var deltaX = Math.abs(acc.x - lastX);
                 var deltaY = Math.abs(acc.y - lastY);
                 var deltaZ = Math.abs(acc.z - lastZ);
+                console.log("delta x: ", deltaX);
                 if (deltaX + deltaY + deltaZ > 3) {
                     moveCounter++;
                 }
                 else {
                     moveCounter = Math.max(0, --moveCounter);
                 }
+                if (moveCounter > 2) {
+                    console.log('SHAKE!!!');
+                    moveCounter = 0;
+                }
+                lastX = acc.x;
+                lastY = acc.y;
+                lastZ = acc.z;
+                console.log("lastX: ", lastX);
             }
         }
     };
