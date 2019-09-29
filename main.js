@@ -41,7 +41,7 @@ module.exports = ".garden {\r\n    position: relative;\r\n    width : 200px;\r\n
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<!-- Learn about this code on MDN: https://developer.mozilla.org/en-US/docs/Web/API/Detecting_device_orientation -->\n\n<h1> 17 </h1>\n<h1> Your current acceleration: </h1>\n\n<h2>x acceleration: {{xAccBS | async}} m/s^2</h2>\n<h2>y accleration: {{yAccBS | async}} m/s^2</h2>\n<h2>Aggregate acceleration: {{totalAccBS | async}} m/s^2</h2>\n\n<h3>Stops left: {{stopsLeftBS | async}}</h3>"
+module.exports = "<!-- Learn about this code on MDN: https://developer.mozilla.org/en-US/docs/Web/API/Detecting_device_orientation -->\n<link rel=\"stylesheet\" href=\"https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css\" integrity=\"sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T\" crossorigin=\"anonymous\">\n<div style=\"margin-left: 2em\">\n\n<h1> 17 </h1>\n<h1> Your current acceleration: </h1>\n\n<h2>x: {{xAccBS | async}} m/s^2</h2>\n<h2>y: {{yAccBS | async}} m/s^2</h2>\n<h2>Aggregate: {{totalAccBS | async}} m/s^2</h2>\n\n<h1 style=\"color:darkgreen; margin-top:1em;\">Bus stops left: {{stopsLeftBS | async}}</h1>\n\n</div>"
 
 /***/ }),
 
@@ -97,7 +97,6 @@ var AccelerometerComponent = /** @class */ (function () {
     });
     AccelerometerComponent.prototype.ngOnInit = function () {
         var _this = this;
-        window.alert("hello");
         this.xAccBS.next(1);
         console.log(this.xAccBS);
         console.log('Engage');
@@ -154,11 +153,12 @@ var AccelerometerComponent = /** @class */ (function () {
             }
             // eventual stop ie complete zero accleration after gradual decceleration
             if (consistentDeccelerationbs.value >= 50 && Math.abs(totalAccbs.value) <= 0.5) {
-                this.stopsLeft -= 1;
                 stopsbs.next(stopsbs.value - 1);
                 consistentDeccelerationbs.next(0);
                 console.log("stop detected");
-                window.alert("Your stop!!!!");
+                if (stopsbs.value == 0) {
+                    window.alert("You have arrived at your stop.");
+                }
             }
             // if (!acc.x) return;
             //only log if x,y,z > 1
