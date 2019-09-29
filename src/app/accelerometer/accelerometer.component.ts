@@ -7,14 +7,10 @@ import { BehaviorSubject } from 'rxjs';
   styleUrls: ['./accelerometer.component.css']
 })
 export class AccelerometerComponent implements OnInit {
-  // absolute acceleration
-  xAcc: number = 0
-  yAcc: number = 0
-  totalAcc: number = 0
 
-  xAccBS = new BehaviorSubject<number>(0);
-  yAccBS = new BehaviorSubject<number>(0);
-  totalAccBS = new BehaviorSubject<number>(0);
+  xAcceleration = new BehaviorSubject<number>(0); //acceleration on x-axis
+  yAcceleration = new BehaviorSubject<number>(0);  //acceleration on y-axis
+  totalAccBS = new BehaviorSubject<number>(0); //aggreagate acceleration
 
   stopsLeft: number = 3;
   stopsLeftBS = new BehaviorSubject<number>(3);
@@ -25,16 +21,9 @@ export class AccelerometerComponent implements OnInit {
 
   constructor() {
   }
-
-  get xAcceleration(){
-    return this.xAcc
-  }
-
-  get yAcceleration(){
-    return this.yAcc
-  }
   
   ngOnInit() {
+    window.navigator.vibrate(200);
     var start = new Date().getTime()
     
     console.log('Engage');
@@ -42,6 +31,7 @@ export class AccelerometerComponent implements OnInit {
 
     let lastX = 0, lastY = 0, lastZ =0
     let moveCounter = 0;
+    let ERROR_MARGIN = 0.12;
 
     let xbs = new BehaviorSubject<number>(0)
     let ybs = new BehaviorSubject<number>(0)
@@ -51,15 +41,15 @@ export class AccelerometerComponent implements OnInit {
     let timeElapsed = new BehaviorSubject<number>(0);
 
     xbs.subscribe(x=>{
-      console.log("subscribe: ", x)
-      this.xAccBS.next(x)
+      console.log("x-axis: ", x)
+      this.xAcceleration.next(x)
     })
     ybs.subscribe(x=>{
-      console.log("subscribe: ", x)
-      this.yAccBS.next(x)
+      console.log("y-axis: ", x)
+      this.yAcceleration.next(x)
     })
     totalAccbs.subscribe(x=>{
-      console.log("subscribe: ", x)
+      console.log("total: ", x)
       this.totalAccBS.next(x)
     })
     stopsbs.subscribe(x=>{
@@ -81,15 +71,16 @@ export class AccelerometerComponent implements OnInit {
       // }
       var elapsed = new Date().getTime() - start;
       console.log(elapsed)
+      timeElapsed.next(elapsed)
 
       let accx = acc.x
       let accy = acc.y
       // calibrate for stationary device
       // reset within margin of error
-      if (Math.abs(accx) < 0.12){
+      if (Math.abs(accx) < ERROR_MARGIN){
         accx = 0
       }
-      if (Math.abs(accy) < 0.12){
+      if (Math.abs(accy) < ERROR_MARGIN){
         accy = 0
       }
       accx = Math.round(accx * 10000) / 10000
@@ -110,7 +101,7 @@ export class AccelerometerComponent implements OnInit {
       }
 
       // eventual stop ie complete zero accleration after gradual decceleration
-      if (consistentDeccelerationbs.value >= 39 && Math.abs(totalAccbs.value)<= 0.24){
+      if (consistentDeccelerationbs.value >= 39 && Math.abs(totalAccbs.value)<= ERROR_MARGIN+9){
         this.stopsLeft -= 1
         stopsbs.next(stopsbs.value-1)
         consistentDeccelerationbs.next(0)
@@ -118,11 +109,11 @@ export class AccelerometerComponent implements OnInit {
         if (stopsbs.value <= 0){
           window.alert("You have arrived at your stop")
           stopsbs.next(3)
+          timeElapsed.next(0)
         }
       }
 
       // if (!acc.x) return;
-
       //only log if x,y,z > 1
       if (Math.abs(acc.x) >= 1 &&
         Math.abs(acc.y) >= 1 &&
@@ -138,13 +129,8 @@ export class AccelerometerComponent implements OnInit {
         let deltaX = Math.abs(acc.x - lastX);
         let deltaY = Math.abs(acc.y - lastY);
         let deltaZ = Math.abs(acc.z - lastZ);
-
-
-        if (deltaX + deltaY + deltaZ > 3) {
-          moveCounter++;
-        } else {
-          moveCounter = Math.max(0, --moveCounter);
-        }
+        console.log("deltax: ", deltaX)
+        console.log("deltay: ", deltaY)
 
       }
     }
