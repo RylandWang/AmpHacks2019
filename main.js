@@ -126,9 +126,6 @@ var AccelerometerComponent = /** @class */ (function () {
             console.log("decceleration in a row: ", x);
             _this.consistentDecceleration = x;
         });
-        this.xAccBS.next(lastX);
-        console.log("BS updated");
-        console.log("lastX: ", lastX);
         function motion(e) {
             var acc = e.acceleration;
             // if (!acc.hasOwnProperty('x')) {
