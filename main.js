@@ -70,32 +70,14 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 
 var AccelerometerComponent = /** @class */ (function () {
     function AccelerometerComponent() {
-        // absolute acceleration
-        this.xAcc = 0;
-        this.yAcc = 0;
-        this.totalAcc = 0;
-        this.xAccBS = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](0);
-        this.yAccBS = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](0);
-        this.totalAccBS = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](0);
+        this.xAccBS = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](0); //acceleration on x-axis
+        this.yAccBS = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](0); //acceleration on y-axis
+        this.totalAccBS = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](0); //aggreagate acceleration
         this.stopsLeft = 3;
         this.stopsLeftBS = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](3);
         this.consistentDecceleration = 0;
         this.timeElapsed = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](0);
     }
-    Object.defineProperty(AccelerometerComponent.prototype, "xAcceleration", {
-        get: function () {
-            return this.xAcc;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(AccelerometerComponent.prototype, "yAcceleration", {
-        get: function () {
-            return this.yAcc;
-        },
-        enumerable: true,
-        configurable: true
-    });
     AccelerometerComponent.prototype.ngOnInit = function () {
         var _this = this;
         window.navigator.vibrate(200);
@@ -104,7 +86,7 @@ var AccelerometerComponent = /** @class */ (function () {
         window.addEventListener('devicemotion', motion, false);
         var lastX = 0, lastY = 0, lastZ = 0;
         var moveCounter = 0;
-        var ERROR_MARGIN = 0.16;
+        var ERROR_MARGIN = 0.12;
         var xbs = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](0);
         var ybs = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](0);
         var totalAccbs = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](0);
