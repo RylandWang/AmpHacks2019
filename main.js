@@ -107,6 +107,7 @@ var AccelerometerComponent = /** @class */ (function () {
         var ybs = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](0);
         var totalbs = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](0);
         var stopsbs = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](this.stopsLeftBS.value);
+        var consistentDeccelerationbs = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](0);
         xbs.subscribe(function (x) {
             console.log("subscribe: ", x);
             _this.xAccBS.next(x);
@@ -122,6 +123,10 @@ var AccelerometerComponent = /** @class */ (function () {
         stopsbs.subscribe(function (x) {
             console.log("subscribe: ", x);
             _this.stopsLeftBS.next(x);
+        });
+        consistentDeccelerationbs.subscribe(function (x) {
+            console.log("decceleration in a row: ", x);
+            _this.consistentDecceleration = x;
         });
         this.xAccBS.next(lastX);
         console.log("BS updated");
@@ -143,15 +148,16 @@ var AccelerometerComponent = /** @class */ (function () {
             // gradual decceleration before eventual stop
             if (this.totalAcc < 0) {
                 this.consistentDecceleration += 1;
+                this.consistentDeccelerationbs.next(this.consistentDeccelerationbs.value + 1);
             }
             else {
-                this.consistentDecceleration = 0;
+                this.consistentDeccelerationbs.next(0);
             }
             // eventual stop ie 0 accleration
-            if (this.consistentDecceleration >= 5 && Math.abs(this.totalAccBS.value) <= 0.5) {
+            if (this.consistentDeccelerationbs.value >= 5 && Math.abs(this.totalAccBS.value) <= 0.5) {
                 this.stopsLeft -= 1;
                 stopsbs.next(stopsbs.value - 1);
-                this.consistentDecceleration = 0;
+                this.consistentDeccelerationbs.next(0);
                 console.log("stop detected");
             }
             // if (!acc.x) return;
