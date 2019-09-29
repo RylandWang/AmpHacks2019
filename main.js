@@ -41,7 +41,7 @@ module.exports = ".garden {\r\n    position: relative;\r\n    width : 200px;\r\n
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<!-- Learn about this code on MDN: https://developer.mozilla.org/en-US/docs/Web/API/Detecting_device_orientation -->\n<link rel=\"stylesheet\" href=\"https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css\" integrity=\"sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T\" crossorigin=\"anonymous\">\n<div style=\"margin-left: 2em\">\n\n<p> 17 </p>\n<h1> Youracceleration: </h1>\n\n<h3>x: {{xAccBS | async}} m/s^2</h3>\n<h3>y: {{yAccBS | async}} m/s^2</h3>\n<h3>Aggregate: {{totalAccBS | async}} m/s^2</h3>\n\n<h1 style=\"color:darkgreen; margin-top:1em;\">Bus stops left: {{stopsLeftBS | async}}</h1>\n\n</div>"
+module.exports = "<!-- Learn about this code on MDN: https://developer.mozilla.org/en-US/docs/Web/API/Detecting_device_orientation -->\n<link rel=\"stylesheet\" href=\"https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css\" integrity=\"sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T\" crossorigin=\"anonymous\">\n<div style=\"margin-left: 2em\">\n\n<p> 17 </p>\n<h1> Your acceleration: </h1>\n\n<h3>x: {{xAccBS | async}} m/s^2</h3>\n<h3>y: {{yAccBS | async}} m/s^2</h3>\n<h3>Aggregate: {{totalAccBS | async}} m/s^2</h3>\n\n<h1 style=\"color:darkgreen; margin-top:1em;\">Bus stops left: {{stopsLeftBS | async}}</h1>\n\n</div>"
 
 /***/ }),
 
@@ -71,35 +71,19 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 var AccelerometerComponent = /** @class */ (function () {
     function AccelerometerComponent() {
         // absolute acceleration
-        this.xAcc = 0;
-        this.yAcc = 0;
-        this.totalAcc = 0;
-        this.xAccBS = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](0);
-        this.yAccBS = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](0);
-        this.totalAccBS = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](0);
-        this.stopsLeft = 3;
+        this.xAccBS = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](0); // x-axis acceleration
+        this.yAccBS = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](0); // y-axis acceleration
+        this.totalAccBS = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](0); // aggregate acceleration
+        this.stopsLeft = 3; //TODO: integrate with Google Map API to autmatically determine
         this.stopsLeftBS = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](3);
         this.consistentDecceleration = 0;
     }
-    Object.defineProperty(AccelerometerComponent.prototype, "xAcceleration", {
-        get: function () {
-            return this.xAcc;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(AccelerometerComponent.prototype, "yAcceleration", {
-        get: function () {
-            return this.yAcc;
-        },
-        enumerable: true,
-        configurable: true
-    });
     AccelerometerComponent.prototype.ngOnInit = function () {
         var _this = this;
         this.xAccBS.next(1);
         console.log(this.xAccBS);
         console.log('Engage');
+        // detect device motion
         window.addEventListener('devicemotion', motion, false);
         var lastX = 0, lastY = 0, lastZ = 0;
         var moveCounter = 0;
@@ -136,12 +120,10 @@ var AccelerometerComponent = /** @class */ (function () {
             // if (!acc.hasOwnProperty('x')) {
             //   acc = e.accelerationIncludingGravity;
             // }
-            console.log(this.xAccBS);
-            console.log("x: ", this.xAcc);
-            console.log("y: ", this.yAcc);
-            xbs.next(acc.x);
-            ybs.next(acc.y);
-            var totalAcc = acc.x + acc.y;
+            // get x, y and aggregate acceleration
+            xbs.next(Math.round(acc.x * 10000) / 10000);
+            ybs.next(Math.round(acc.y * 10000) / 10000);
+            var totalAcc = Math.round((acc.x + acc.y) * 10000) / 10000;
             totalAccbs.next(totalAcc);
             // gradual decceleration before eventual stop
             if (totalAccbs.value < 0) {
