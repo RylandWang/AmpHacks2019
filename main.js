@@ -97,6 +97,7 @@ var AccelerometerComponent = /** @class */ (function () {
     });
     AccelerometerComponent.prototype.ngOnInit = function () {
         var _this = this;
+        window.alert("hello");
         this.xAccBS.next(1);
         console.log(this.xAccBS);
         console.log('Engage');
@@ -152,11 +153,12 @@ var AccelerometerComponent = /** @class */ (function () {
                 consistentDeccelerationbs.next(0);
             }
             // eventual stop ie complete zero accleration after gradual decceleration
-            if (consistentDeccelerationbs.value >= 20 && Math.abs(totalAccbs.value) <= 0.5) {
+            if (consistentDeccelerationbs.value >= 50 && Math.abs(totalAccbs.value) <= 0.5) {
                 this.stopsLeft -= 1;
                 stopsbs.next(stopsbs.value - 1);
                 consistentDeccelerationbs.next(0);
                 console.log("stop detected");
+                window.alert("Your stop!!!!");
             }
             // if (!acc.x) return;
             //only log if x,y,z > 1
