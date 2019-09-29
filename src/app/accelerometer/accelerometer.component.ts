@@ -12,6 +12,9 @@ export class AccelerometerComponent implements OnInit {
   yAcceleration = new BehaviorSubject<number>(0);  //acceleration on y-axis
   totalAccBS = new BehaviorSubject<number>(0); //aggreagate acceleration
 
+  velocity = new BehaviorSubject<number>(0); 
+  distance = new BehaviorSubject<number>(0)
+
   stopsLeft: number = 3;
   stopsLeftBS = new BehaviorSubject<number>(3);
 
@@ -23,22 +26,29 @@ export class AccelerometerComponent implements OnInit {
   }
   
   ngOnInit() {
-    window.navigator.vibrate(200);
     var start = new Date().getTime()
     
     console.log('Engage');
     window.addEventListener('devicemotion', motion, false);
 
     let lastX = 0, lastY = 0, lastZ =0
-    let moveCounter = 0;
-    let ERROR_MARGIN = 0.12;
+    let ERROR_MARGIN = 0.15;
 
     let xbs = new BehaviorSubject<number>(0)
     let ybs = new BehaviorSubject<number>(0)
     let totalAccbs = new BehaviorSubject<number>(0)
     let stopsbs = new BehaviorSubject<number>(this.stopsLeftBS.value)
     let consistentDeccelerationbs = new BehaviorSubject<number>(0)
+
+    //v = v0 + at
+    let velocity = new BehaviorSubject<number>(0);
+    //v0
+    let prevVelocity = 0
+    let distance = new BehaviorSubject<number>(0);
+
     let timeElapsed = new BehaviorSubject<number>(0);
+    let prevTime = 0
+    let deltaTime = 0
 
     xbs.subscribe(x=>{
       console.log("x-axis: ", x)
@@ -63,14 +73,22 @@ export class AccelerometerComponent implements OnInit {
     timeElapsed.subscribe(x=>{
       this.timeElapsed.next(x)
     })
+    velocity.subscribe(x=>{
+      this.velocity.next(x)
+    })
+    distance.subscribe(x=>{
+      this.distance.next(x)
+    })
 
     function motion(e: DeviceMotionEvent,) {
+
       let acc = e.acceleration;
       // if (!acc.hasOwnProperty('x')) {
       //   acc = e.accelerationIncludingGravity;
       // }
-      var elapsed = new Date().getTime() - start;
-      console.log(elapsed)
+      var elapsed = (new Date().getTime() - start)/1000;
+      prevTime = timeElapsed.value
+      deltaTime = elapsed - prevTime
       timeElapsed.next(elapsed)
 
       let accx = acc.x
@@ -90,6 +108,11 @@ export class AccelerometerComponent implements OnInit {
       ybs.next(accy)
       let totalAcc = Math.round((accx + accy)*10000)/10000
       totalAccbs.next(totalAcc)
+      console.log(totalAcc)
+
+      prevVelocity = velocity.value
+      velocity.next(prevVelocity + totalAcc*deltaTime)
+      distance.next(distance.value + velocity.value*deltaTime)
       
       // gradual decceleration before eventual stop
       if (totalAccbs.value < 0){
