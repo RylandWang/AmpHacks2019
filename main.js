@@ -41,7 +41,7 @@ module.exports = ".body {\r\n  background-color: #201F35;\r\n  color: #fff;\r\n 
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<!-- Learn about this code on MDN: https://developer.mozilla.org/en-US/docs/Web/API/Detecting_device_orientation -->\r\n<link rel=\"stylesheet\" href=\"https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css\" integrity=\"sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T\" crossorigin=\"anonymous\">\r\n\r\n<div class=\"body\" style=\"margin-left: 2em\">\r\n\r\n<p> Build number: 21</p>\r\n<h1> Your acceleration: </h1>\r\n\r\n<h3>x: {{xAccBS | async}} m/s^2</h3>\r\n<h3>y: {{yAccBS | async}} m/s^2</h3>\r\n<h3>Aggregate: {{totalAccBS | async}} m/s^2</h3>\r\n\r\n<h1 style=\"color:darkgreen; margin-top:1em;\">Bus stops left: {{stopsLeftBS | async}}</h1>\r\n\r\n</div>"
+module.exports = "<!-- Learn about this code on MDN: https://developer.mozilla.org/en-US/docs/Web/API/Detecting_device_orientation -->\r\n<link rel=\"stylesheet\" href=\"https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css\" integrity=\"sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T\" crossorigin=\"anonymous\">\r\n\r\n<div class=\"body\" style=\"margin-left: 2em\">\r\n\r\n<p> Build number: 21</p>\r\n<h1> Your acceleration: </h1>\r\n\r\n<h3>x: {{xAccBS | async}} m/s^2</h3>\r\n<h3>y: {{yAccBS | async}} m/s^2</h3>\r\n<h3>Aggregate: {{totalAccBS | async}} m/s^2</h3>\r\n\r\n<h1 style=\"color:darkgreen; margin-top:1em;\">Bus stops left: {{stopsLeftBS | async}}</h1>\r\n<h2 style=\"color:dodgerblue; margin-top:1em;\">Time elapsed: {{timeElapsed | async}}</h2>\r\n\r\n</div>"
 
 /***/ }),
 
@@ -80,6 +80,7 @@ var AccelerometerComponent = /** @class */ (function () {
         this.stopsLeft = 3;
         this.stopsLeftBS = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](3);
         this.consistentDecceleration = 0;
+        this.timeElapsed = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](0);
     }
     Object.defineProperty(AccelerometerComponent.prototype, "xAcceleration", {
         get: function () {
@@ -107,6 +108,7 @@ var AccelerometerComponent = /** @class */ (function () {
         var totalAccbs = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](0);
         var stopsbs = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](this.stopsLeftBS.value);
         var consistentDeccelerationbs = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](0);
+        var timeElapsed = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](0);
         xbs.subscribe(function (x) {
             console.log("subscribe: ", x);
             _this.xAccBS.next(x);
@@ -127,6 +129,9 @@ var AccelerometerComponent = /** @class */ (function () {
             console.log("decceleration in a row: ", x);
             _this.consistentDecceleration = x;
         });
+        timeElapsed.subscribe(function (x) {
+            _this.timeElapsed.next(x);
+        });
         function motion(e) {
             var acc = e.acceleration;
             // if (!acc.hasOwnProperty('x')) {
@@ -137,6 +142,7 @@ var AccelerometerComponent = /** @class */ (function () {
             var accx = acc.x;
             var accy = acc.y;
             // calibrate for stationary device
+            // reset within margin of error
             if (Math.abs(accx) < 0.12) {
                 accx = 0;
             }
@@ -147,7 +153,7 @@ var AccelerometerComponent = /** @class */ (function () {
             accy = Math.round(accy * 10000) / 10000;
             xbs.next(accx);
             ybs.next(accy);
-            var totalAcc = accx + accy;
+            var totalAcc = Math.round((accx + accy) * 10000) / 10000;
             totalAccbs.next(totalAcc);
             // gradual decceleration before eventual stop
             if (totalAccbs.value < 0) {
@@ -158,7 +164,7 @@ var AccelerometerComponent = /** @class */ (function () {
                 consistentDeccelerationbs.next(0);
             }
             // eventual stop ie complete zero accleration after gradual decceleration
-            if (consistentDeccelerationbs.value >= 52 && Math.abs(totalAccbs.value) <= 0.29) {
+            if (consistentDeccelerationbs.value >= 39 && Math.abs(totalAccbs.value) <= 0.24) {
                 this.stopsLeft -= 1;
                 stopsbs.next(stopsbs.value - 1);
                 consistentDeccelerationbs.next(0);
