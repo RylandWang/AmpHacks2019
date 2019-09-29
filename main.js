@@ -131,12 +131,19 @@ var AccelerometerComponent = /** @class */ (function () {
             // if (!acc.hasOwnProperty('x')) {
             //   acc = e.accelerationIncludingGravity;
             // }
-            console.log(this.xAccBS);
-            console.log("x: ", this.xAcc);
-            console.log("y: ", this.yAcc);
-            xbs.next(acc.x);
-            ybs.next(acc.y);
-            var totalAcc = acc.x + acc.y;
+            var accx = acc.x;
+            var accy = acc.y;
+            if (Math.abs(accx) < 0.12) {
+                accx = 0;
+            }
+            if (Math.abs(accy) < 0.12) {
+                accy = 0;
+            }
+            accx = Math.round(accx * 10000) / 10000;
+            accy = Math.round(accy * 10000) / 10000;
+            xbs.next(accx);
+            ybs.next(accy);
+            var totalAcc = accx + accy;
             totalAccbs.next(totalAcc);
             // gradual decceleration before eventual stop
             if (totalAccbs.value < 0) {
@@ -147,19 +154,18 @@ var AccelerometerComponent = /** @class */ (function () {
                 consistentDeccelerationbs.next(0);
             }
             // eventual stop ie complete zero accleration after gradual decceleration
-            if (consistentDeccelerationbs.value >= 50 && Math.abs(totalAccbs.value) <= 0.5) {
+            if (consistentDeccelerationbs.value >= 52 && Math.abs(totalAccbs.value) <= 0.29) {
                 this.stopsLeft -= 1;
                 stopsbs.next(stopsbs.value - 1);
                 consistentDeccelerationbs.next(0);
                 console.log("stop detected");
-                window.alert("Your stop!!!!");
+                window.alert("You have arrived at your stop");
             }
             // if (!acc.x) return;
             //only log if x,y,z > 1
             if (Math.abs(acc.x) >= 1 &&
                 Math.abs(acc.y) >= 1 &&
                 Math.abs(acc.z) >= 1) {
-                //console.log('motion', acc);
                 if (!lastX) {
                     lastX = acc.x;
                     lastY = acc.y;
@@ -169,21 +175,12 @@ var AccelerometerComponent = /** @class */ (function () {
                 var deltaX = Math.abs(acc.x - lastX);
                 var deltaY = Math.abs(acc.y - lastY);
                 var deltaZ = Math.abs(acc.z - lastZ);
-                console.log("delta x: ", deltaX);
                 if (deltaX + deltaY + deltaZ > 3) {
                     moveCounter++;
                 }
                 else {
                     moveCounter = Math.max(0, --moveCounter);
                 }
-                if (moveCounter > 2) {
-                    console.log('SHAKE!!!');
-                    moveCounter = 0;
-                }
-                lastX = acc.x;
-                lastY = acc.y;
-                lastZ = acc.z;
-                console.log("lastX: ", lastX);
             }
         }
     };
