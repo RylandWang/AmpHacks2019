@@ -30,7 +30,7 @@ webpackEmptyAsyncContext.id = "./src/$$_lazy_route_resource lazy recursive";
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = ".body {\r\n  background-color: #201F35;\r\n  color: #fff;\r\n  padding: 30px;\r\n}\r\n\r\n\r\n.garden {\r\n    position: relative;\r\n    width : 200px;\r\n    height: 200px;\r\n    border: 5px solid #CCC;\r\n    border-radius: 10px;\r\n  }\r\n\r\n\r\n.ball {\r\n    position: absolute;\r\n    top   : 90px;\r\n    left  : 90px;\r\n    width : 20px;\r\n    height: 20px;\r\n    background: green;\r\n    border-radius: 100%;\r\n  }\r\n  \r\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvYWNjZWxlcm9tZXRlci9hY2NlbGVyb21ldGVyLmNvbXBvbmVudC5jc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDRSwwQkFBMEI7RUFDMUIsWUFBWTtFQUNaLGNBQWM7Q0FDZjs7O0FBR0Q7SUFDSSxtQkFBbUI7SUFDbkIsY0FBYztJQUNkLGNBQWM7SUFDZCx1QkFBdUI7SUFDdkIsb0JBQW9CO0dBQ3JCOzs7QUFFRDtJQUNFLG1CQUFtQjtJQUNuQixhQUFhO0lBQ2IsYUFBYTtJQUNiLGFBQWE7SUFDYixhQUFhO0lBQ2Isa0JBQWtCO0lBQ2xCLG9CQUFvQjtHQUNyQiIsImZpbGUiOiJzcmMvYXBwL2FjY2VsZXJvbWV0ZXIvYWNjZWxlcm9tZXRlci5jb21wb25lbnQuY3NzIiwic291cmNlc0NvbnRlbnQiOlsiLmJvZHkge1xyXG4gIGJhY2tncm91bmQtY29sb3I6ICMyMDFGMzU7XHJcbiAgY29sb3I6ICNmZmY7XHJcbiAgcGFkZGluZzogMzBweDtcclxufVxyXG5cclxuXHJcbi5nYXJkZW4ge1xyXG4gICAgcG9zaXRpb246IHJlbGF0aXZlO1xyXG4gICAgd2lkdGggOiAyMDBweDtcclxuICAgIGhlaWdodDogMjAwcHg7XHJcbiAgICBib3JkZXI6IDVweCBzb2xpZCAjQ0NDO1xyXG4gICAgYm9yZGVyLXJhZGl1czogMTBweDtcclxuICB9XHJcbiAgXHJcbiAgLmJhbGwge1xyXG4gICAgcG9zaXRpb246IGFic29sdXRlO1xyXG4gICAgdG9wICAgOiA5MHB4O1xyXG4gICAgbGVmdCAgOiA5MHB4O1xyXG4gICAgd2lkdGggOiAyMHB4O1xyXG4gICAgaGVpZ2h0OiAyMHB4O1xyXG4gICAgYmFja2dyb3VuZDogZ3JlZW47XHJcbiAgICBib3JkZXItcmFkaXVzOiAxMDAlO1xyXG4gIH1cclxuICAiXX0= */"
+module.exports = ".body {\r\n  background-color: #201F35;\r\n  color: #fff;\r\n  padding: 30px;\r\n}\r\n  \r\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvYWNjZWxlcm9tZXRlci9hY2NlbGVyb21ldGVyLmNvbXBvbmVudC5jc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDRSwwQkFBMEI7RUFDMUIsWUFBWTtFQUNaLGNBQWM7Q0FDZiIsImZpbGUiOiJzcmMvYXBwL2FjY2VsZXJvbWV0ZXIvYWNjZWxlcm9tZXRlci5jb21wb25lbnQuY3NzIiwic291cmNlc0NvbnRlbnQiOlsiLmJvZHkge1xyXG4gIGJhY2tncm91bmQtY29sb3I6ICMyMDFGMzU7XHJcbiAgY29sb3I6ICNmZmY7XHJcbiAgcGFkZGluZzogMzBweDtcclxufVxyXG4gICJdfQ== */"
 
 /***/ }),
 
@@ -41,7 +41,7 @@ module.exports = ".body {\r\n  background-color: #201F35;\r\n  color: #fff;\r\n 
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<!-- Learn about this code on MDN: https://developer.mozilla.org/en-US/docs/Web/API/Detecting_device_orientation -->\r\n<link rel=\"stylesheet\" href=\"https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css\" integrity=\"sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T\" crossorigin=\"anonymous\">\r\n\r\n<div class=\"body\" style=\"margin-left: 2em\">\r\n\r\n<p> Build number: 23</p>\r\n<h1> Your acceleration: </h1>\r\n\r\n<h3>x: {{xAcceleration | async}} m/s^2</h3>\r\n<h3>y: {{yAcceleration | async}} m/s^2</h3>\r\n<h3>Aggregate: {{totalAccBS | async}}</h3>\r\n\r\n<h1 style=\"color:darkgreen; margin-top:1em;\">Bus stops left: {{stopsLeftBS | async}}</h1>\r\n<h3 style=\"color:dodgerblue; margin-top:1em;\">Time elapsed: {{timeElapsed | async}}</h3>\r\n<h3 style=\"color:dodgerblue;\">velocity: {{velocity | async}}</h3>\r\n\r\n</div>"
+module.exports = "<!-- Learn about this code on MDN: https://developer.mozilla.org/en-US/docs/Web/API/Detecting_device_orientation -->\r\n<link rel=\"stylesheet\" href=\"https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css\" integrity=\"sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T\" crossorigin=\"anonymous\">\r\n\r\n<div class=\"body\">\r\n\r\n<p> Build number: 23</p>\r\n<h1> Your acceleration: </h1>\r\n\r\n<h3>x: {{xAcceleration | async}} m/s^2</h3>\r\n<h3>y: {{yAcceleration | async}} m/s^2</h3>\r\n<h3>Aggregate: {{totalAccBS | async}}</h3>\r\n\r\n<h1 style=\"color:darkgreen; margin-top:1em;\">Bus stops left: {{stopsLeftBS | async}}</h1>\r\n<h3 style=\"color:dodgerblue; margin-top:1em;\">Time elapsed: {{timeElapsed | async}}</h3>\r\n<h3 style=\"color:dodgerblue;\">velocity: {{velocity | async}}</h3>\r\n<h3 style=\"color:dodgerblue;\">distance travelled: {{velocity | async}}</h3>\r\n\r\n</div>"
 
 /***/ }),
 
@@ -74,6 +74,7 @@ var AccelerometerComponent = /** @class */ (function () {
         this.yAcceleration = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](0); //acceleration on y-axis
         this.totalAccBS = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](0); //aggreagate acceleration
         this.velocity = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](0);
+        this.distance = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](0);
         this.stopsLeft = 3;
         this.stopsLeftBS = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](3);
         this.consistentDecceleration = 0;
@@ -124,6 +125,9 @@ var AccelerometerComponent = /** @class */ (function () {
         });
         velocity.subscribe(function (x) {
             _this.velocity.next(x);
+        });
+        distance.subscribe(function (x) {
+            _this.distance.next(x);
         });
         function motion(e) {
             var acc = e.acceleration;
