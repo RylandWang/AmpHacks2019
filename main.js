@@ -82,9 +82,7 @@ var AccelerometerComponent = /** @class */ (function () {
     }
     AccelerometerComponent.prototype.ngOnInit = function () {
         var _this = this;
-        new Audio("src/alert.mps3").play();
         var start = new Date().getTime();
-        console.log('Engage');
         window.addEventListener('devicemotion', motion, false);
         var lastX = 0, lastY = 0, lastZ = 0;
         var ERROR_MARGIN = 0.15;
