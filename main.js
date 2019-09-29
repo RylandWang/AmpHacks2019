@@ -103,6 +103,7 @@ var AccelerometerComponent = /** @class */ (function () {
         window.addEventListener('devicemotion', motion, false);
         var lastX = 0, lastY = 0, lastZ = 0;
         var moveCounter = 0;
+        var ERROR_MARGIN = 0.16;
         var xbs = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](0);
         var ybs = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](0);
         var totalAccbs = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](0);
@@ -144,10 +145,10 @@ var AccelerometerComponent = /** @class */ (function () {
             var accy = acc.y;
             // calibrate for stationary device
             // reset within margin of error
-            if (Math.abs(accx) < 0.12) {
+            if (Math.abs(accx) < ERROR_MARGIN) {
                 accx = 0;
             }
-            if (Math.abs(accy) < 0.16) {
+            if (Math.abs(accy) < ERROR_MARGIN) {
                 accy = 0;
             }
             accx = Math.round(accx * 10000) / 10000;
@@ -165,7 +166,7 @@ var AccelerometerComponent = /** @class */ (function () {
                 consistentDeccelerationbs.next(0);
             }
             // eventual stop ie complete zero accleration after gradual decceleration
-            if (consistentDeccelerationbs.value >= 39 && Math.abs(totalAccbs.value) <= 0.24) {
+            if (consistentDeccelerationbs.value >= 39 && Math.abs(totalAccbs.value) <= ERROR_MARGIN) {
                 this.stopsLeft -= 1;
                 stopsbs.next(stopsbs.value - 1);
                 consistentDeccelerationbs.next(0);
