@@ -41,7 +41,7 @@ module.exports = ".body {\r\n  background-color: #201F35;\r\n  color: #fff;\r\n 
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<!-- Learn about this code on MDN: https://developer.mozilla.org/en-US/docs/Web/API/Detecting_device_orientation -->\r\n<link rel=\"stylesheet\" href=\"https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css\" integrity=\"sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T\" crossorigin=\"anonymous\">\r\n\r\n<div class=\"body\" style=\"margin-left: 2em\">\r\n\r\n<p> Build number: 21</p>\r\n<h1> Your acceleration: </h1>\r\n\r\n<h3>x: {{xAccBS | async}} m/s^2</h3>\r\n<h3>y: {{yAccBS | async}} m/s^2</h3>\r\n<h3>Aggregate: {{totalAccBS | async}}</h3>\r\n\r\n<h1 style=\"color:darkgreen; margin-top:1em;\">Bus stops left: {{stopsLeftBS | async}}</h1>\r\n<h2 style=\"color:dodgerblue; margin-top:1em;\">Time elapsed: {{timeElapsed | async}}</h2>\r\n\r\n</div>"
+module.exports = "<!-- Learn about this code on MDN: https://developer.mozilla.org/en-US/docs/Web/API/Detecting_device_orientation -->\r\n<link rel=\"stylesheet\" href=\"https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css\" integrity=\"sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T\" crossorigin=\"anonymous\">\r\n\r\n<div class=\"body\" style=\"margin-left: 2em\">\r\n\r\n<p> Build number: 21</p>\r\n<h1> Your acceleration: </h1>\r\n\r\n<h3>x: {{xAcceleration | async}} m/s^2</h3>\r\n<h3>y: {{yAcceleration | async}} m/s^2</h3>\r\n<h3>Aggregate: {{totalAccBS | async}}</h3>\r\n\r\n<h1 style=\"color:darkgreen; margin-top:1em;\">Bus stops left: {{stopsLeftBS | async}}</h1>\r\n<h3 style=\"color:dodgerblue; margin-top:1em;\">Time elapsed: {{timeElapsed | async}}</h3>\r\n<h3 style=\"color:dodgerblue; margin-top:1em;\">velocity: {{velocity | async}}</h3>\r\n\r\n</div>"
 
 /***/ }),
 
@@ -70,9 +70,10 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 
 var AccelerometerComponent = /** @class */ (function () {
     function AccelerometerComponent() {
-        this.xAccBS = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](0); //acceleration on x-axis
-        this.yAccBS = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](0); //acceleration on y-axis
+        this.xAcceleration = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](0); //acceleration on x-axis
+        this.yAcceleration = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](0); //acceleration on y-axis
         this.totalAccBS = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](0); //aggreagate acceleration
+        this.velocity = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](0);
         this.stopsLeft = 3;
         this.stopsLeftBS = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](3);
         this.consistentDecceleration = 0;
@@ -85,24 +86,29 @@ var AccelerometerComponent = /** @class */ (function () {
         console.log('Engage');
         window.addEventListener('devicemotion', motion, false);
         var lastX = 0, lastY = 0, lastZ = 0;
-        var moveCounter = 0;
         var ERROR_MARGIN = 0.12;
         var xbs = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](0);
         var ybs = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](0);
         var totalAccbs = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](0);
         var stopsbs = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](this.stopsLeftBS.value);
         var consistentDeccelerationbs = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](0);
+        //v = v0 + at
+        var velocity = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](0);
+        //v0
+        var prevVelocity = 0;
         var timeElapsed = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](0);
+        var prevTime = 0;
+        var deltaTime = 0;
         xbs.subscribe(function (x) {
-            console.log("subscribe: ", x);
-            _this.xAccBS.next(x);
+            console.log("x-axis: ", x);
+            _this.xAcceleration.next(x);
         });
         ybs.subscribe(function (x) {
-            console.log("subscribe: ", x);
-            _this.yAccBS.next(x);
+            console.log("y-axis: ", x);
+            _this.yAcceleration.next(x);
         });
         totalAccbs.subscribe(function (x) {
-            console.log("subscribe: ", x);
+            console.log("total: ", x);
             _this.totalAccBS.next(x);
         });
         stopsbs.subscribe(function (x) {
@@ -116,13 +122,17 @@ var AccelerometerComponent = /** @class */ (function () {
         timeElapsed.subscribe(function (x) {
             _this.timeElapsed.next(x);
         });
+        velocity.subscribe(function (x) {
+            _this.velocity.next(x);
+        });
         function motion(e) {
             var acc = e.acceleration;
             // if (!acc.hasOwnProperty('x')) {
             //   acc = e.accelerationIncludingGravity;
             // }
             var elapsed = new Date().getTime() - start;
-            console.log(elapsed);
+            prevTime = timeElapsed.value;
+            deltaTime = elapsed - prevTime;
             timeElapsed.next(elapsed);
             var accx = acc.x;
             var accy = acc.y;
@@ -140,6 +150,8 @@ var AccelerometerComponent = /** @class */ (function () {
             ybs.next(accy);
             var totalAcc = Math.round((accx + accy) * 10000) / 10000;
             totalAccbs.next(totalAcc);
+            prevVelocity = velocity.value;
+            velocity.next(prevVelocity + totalAcc * deltaTime);
             // gradual decceleration before eventual stop
             if (totalAccbs.value < 0) {
                 this.consistentDecceleration += 1;
@@ -176,12 +188,6 @@ var AccelerometerComponent = /** @class */ (function () {
                 var deltaZ = Math.abs(acc.z - lastZ);
                 console.log("deltax: ", deltaX);
                 console.log("deltay: ", deltaY);
-                if (deltaX + deltaY + deltaZ > 3) {
-                    moveCounter++;
-                }
-                else {
-                    moveCounter = Math.max(0, --moveCounter);
-                }
             }
         }
     };
