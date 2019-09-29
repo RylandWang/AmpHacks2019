@@ -166,7 +166,7 @@ var AccelerometerComponent = /** @class */ (function () {
                 consistentDeccelerationbs.next(0);
             }
             // eventual stop ie complete zero accleration after gradual decceleration
-            if (consistentDeccelerationbs.value >= 39 && Math.abs(totalAccbs.value) <= ERROR_MARGIN) {
+            if (consistentDeccelerationbs.value >= 39 && Math.abs(totalAccbs.value) <= ERROR_MARGIN + 9) {
                 this.stopsLeft -= 1;
                 stopsbs.next(stopsbs.value - 1);
                 consistentDeccelerationbs.next(0);
@@ -191,6 +191,8 @@ var AccelerometerComponent = /** @class */ (function () {
                 var deltaX = Math.abs(acc.x - lastX);
                 var deltaY = Math.abs(acc.y - lastY);
                 var deltaZ = Math.abs(acc.z - lastZ);
+                console.log("deltax: ", deltaX);
+                console.log("deltay: ", deltaY);
                 if (deltaX + deltaY + deltaZ > 3) {
                     moveCounter++;
                 }
