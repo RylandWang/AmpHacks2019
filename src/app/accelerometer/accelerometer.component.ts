@@ -28,7 +28,6 @@ export class AccelerometerComponent implements OnInit {
   ngOnInit() {
     var start = new Date().getTime()
     
-    console.log('Engage');
     window.addEventListener('devicemotion', motion, false);
 
     let lastX = 0, lastY = 0, lastZ =0
